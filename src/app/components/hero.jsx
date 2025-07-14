@@ -2,8 +2,17 @@ import { Calendar, MapPin, Users } from "lucide-react";
 
 const Hero = () => {
   return (
-    <section className="bg-gradient-to-br from-emerald-50 via-white to-green-50 py-20 px-4">
-      <div className="max-w-6xl mx-auto">
+    <section className="relative bg-gradient-to-br from-emerald-50 via-white to-green-50 py-20 px-4 overflow-hidden">
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
+        style={{
+          backgroundImage: "url('/green.png')",
+        }}
+      ></div>
+
+      {/* Content */}
+      <div className="relative z-10 max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <div className="space-y-4">
@@ -74,6 +83,25 @@ const Hero = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Select Location
+                    </label>
+                    <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                      <option>Choose your location</option>
+                      <option>New York, NY</option>
+                      <option>Los Angeles, CA</option>
+                      <option>Chicago, IL</option>
+                      <option>Houston, TX</option>
+                      <option>Phoenix, AZ</option>
+                      <option>Philadelphia, PA</option>
+                      <option>San Antonio, TX</option>
+                      <option>San Diego, CA</option>
+                      <option>Dallas, TX</option>
+                      <option>San Jose, CA</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       Preferred Date
                     </label>
                     <input
@@ -83,8 +111,8 @@ const Hero = () => {
                   </div>
 
                   <button className="w-full bg-gradient-to-r from-[#7ce3b1] to-[#6dd4a2] hover:from-[#6dd4a2] hover:to-[#5eb893] text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
-  Find Available Times
-</button>       
+                    Find Available physiotherapists
+                  </button>
                 </div>
               </div>
             </div>
