@@ -411,18 +411,6 @@ const Footer = () => {
                 <Star className="h-4 w-4 text-yellow-400" />
                 <span>4.9/5 Patient Rating</span>
               </div>
-              <div className="flex space-x-2">
-                <img
-                  src="https://via.placeholder.com/80x30/e5e7eb/6b7280?text=BBB+A%2B"
-                  alt="BBB Rating"
-                  className="h-6"
-                />
-                <img
-                  src="https://via.placeholder.com/80x30/e5e7eb/6b7280?text=SOC+2"
-                  alt="SOC 2 Certified"
-                  className="h-6"
-                />
-              </div>
             </div>
           </div>
         </div>

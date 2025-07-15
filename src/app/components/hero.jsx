@@ -3,11 +3,12 @@ import { Calendar, MapPin, Users } from "lucide-react";
 const Hero = () => {
   return (
     <section className="relative bg-gradient-to-br from-emerald-50 via-white to-green-50 py-20 px-4 overflow-hidden">
-      {/* Background Image */}
+      {/* Background Image - Reduced size */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
+        className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-10"
         style={{
           backgroundImage: "url('/green.png')",
+          backgroundSize: "50%", // Reduced from cover to 50% of container
         }}
       ></div>
 
@@ -74,10 +75,13 @@ const Hero = () => {
                       Select Service
                     </label>
                     <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-                      <option>General Physiotherapy</option>
-                      <option>Sports Injury</option>
-                      <option>Post-Surgery Rehabilitation</option>
-                      <option>Chronic Pain Management</option>
+                      <option>Geriatric Physiotherapy</option>
+                      <option>Post Surgical Rehabilitation</option>
+                      <option>Sports Massage</option>
+                      <option>Sports Injuries and Rehabilitation</option>
+                      <option>Musculoskeletal Physiotherapy</option>
+                      <option>Pediatric Physiotherapy</option>
+                      <option>Women's Health</option>
                     </select>
                   </div>
 
@@ -87,16 +91,21 @@ const Hero = () => {
                     </label>
                     <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
                       <option>Choose your location</option>
-                      <option>New York, NY</option>
-                      <option>Los Angeles, CA</option>
-                      <option>Chicago, IL</option>
-                      <option>Houston, TX</option>
-                      <option>Phoenix, AZ</option>
-                      <option>Philadelphia, PA</option>
-                      <option>San Antonio, TX</option>
-                      <option>San Diego, CA</option>
-                      <option>Dallas, TX</option>
-                      <option>San Jose, CA</option>
+                      <option>Dublin</option>
+                      <option>Cork</option>
+                      <option>Galway</option>
+                      <option>Limerick</option>
+                      <option>Waterford</option>
+                      <option>Kilkenny</option>
+                      <option>Drogheda</option>
+                      <option>Dundalk</option>
+                      <option>Bray</option>
+                      <option>Navan</option>
+                      <option>Ennis</option>
+                      <option>Tralee</option>
+                      <option>Carlow</option>
+                      <option>Naas</option>
+                      <option>Athlone</option>
                     </select>
                   </div>
 
