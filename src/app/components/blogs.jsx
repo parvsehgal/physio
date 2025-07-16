@@ -6,7 +6,7 @@ export default function BlogsSection() {
       title: "5 Essential Exercises for Lower Back Pain Relief",
       excerpt:
         "Discover effective physiotherapy exercises that can help alleviate chronic lower back pain and improve your mobility.",
-      image: "/blog-1.jpg",
+      image: "/backpain.webp",
       author: "Dr. Michael Chen",
       date: "June 12, 2025",
     },
@@ -14,7 +14,7 @@ export default function BlogsSection() {
       title: "Post-Surgery Recovery: A Complete Physiotherapy Guide",
       excerpt:
         "Learn about the rehabilitation process after surgery and how physiotherapy can accelerate your recovery journey.",
-      image: "/blog-2.jpg",
+      image: "/recovery.webp",
       author: "Sarah Thompson, PT",
       date: "June 10, 2025",
     },
@@ -23,7 +23,7 @@ export default function BlogsSection() {
         "Sports Injury Prevention: Tips from Professional Physiotherapists",
       excerpt:
         "Expert advice on preventing common sports injuries and maintaining peak physical performance through proper care.",
-      image: "/blog-3.jpg",
+      image: "/sportsinjury.webp",
       author: "Dr. James Rodriguez",
       date: "June 8, 2025",
     },
