@@ -219,11 +219,9 @@ const IrelandPhysiotherapistMap = () => {
 
       // Add markers for each location
       physiotherapistLocations.forEach((location) => {
-        const marker = L.marker([location.lat, location.lng], { icon: redIcon })
-          .addTo(newMap)
-          .on("click", () => {
-            setSelectedLocation(location);
-          });
+        const marker = L.marker([location.lat, location.lng], {
+          icon: redIcon,
+        }).addTo(newMap);
 
         // Add popup on hover
         marker.bindTooltip(
@@ -305,10 +303,7 @@ const IrelandPhysiotherapistMap = () => {
               <div className="w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-sm"></div>
               <span>Physiotherapist Available</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-emerald-500" />
-              <span>Click marker for availability</span>
-            </div>
+            <div className="flex items-center gap-2"></div>
             <div className="flex items-center gap-2">
               <MapPin className="h-4 w-4 text-emerald-500" />
               <span>Scroll to zoom • Click and drag to pan</span>
