@@ -1,6 +1,35 @@
+"use client";
 import { Calendar, MapPin, Users } from "lucide-react";
+import { useState } from "react";
 
 const Hero = () => {
+  const [selectedService, setSelectedService] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+
+  // Function to handle navigation
+  const handleFindPhysiotherapists = () => {
+    // Validate form fields
+    if (!selectedService || !selectedLocation || !selectedDate) {
+      alert("Please fill in all fields before searching");
+      return;
+    }
+
+    // Create URL-friendly slugs
+    const serviceSlug = selectedService
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/'/g, "");
+    const locationSlug = selectedLocation.toLowerCase();
+    const dateSlug = selectedDate;
+
+    // Construct the URL - format: /find/[service]/[location]/[date]
+    const url = `/find/${serviceSlug}/${locationSlug}/${dateSlug}`;
+
+    // Navigate to the URL
+    window.location.href = url;
+  };
+
   return (
     <section className="relative bg-gradient-to-br from-emerald-50 via-white to-green-50 py-20 px-4 overflow-hidden">
       {/* Background Image - Reduced size */}
@@ -74,14 +103,29 @@ const Hero = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Select Service
                     </label>
-                    <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-                      <option>Geriatric Physiotherapy</option>
-                      <option>Post Surgical Rehabilitation</option>
-                      <option>Sports Massage</option>
-                      <option>Sports Injuries and Rehabilitation</option>
-                      <option>Musculoskeletal Physiotherapy</option>
-                      <option>Pediatric Physiotherapy</option>
-                      <option>Women's Health</option>
+                    <select
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      value={selectedService}
+                      onChange={(e) => setSelectedService(e.target.value)}
+                    >
+                      <option value="">Choose your service</option>
+                      <option value="Geriatric Physiotherapy">
+                        Geriatric Physiotherapy
+                      </option>
+                      <option value="Post Surgical Rehabilitation">
+                        Post Surgical Rehabilitation
+                      </option>
+                      <option value="Sports Massage">Sports Massage</option>
+                      <option value="Sports Injuries and Rehabilitation">
+                        Sports Injuries and Rehabilitation
+                      </option>
+                      <option value="Musculoskeletal Physiotherapy">
+                        Musculoskeletal Physiotherapy
+                      </option>
+                      <option value="Pediatric Physiotherapy">
+                        Pediatric Physiotherapy
+                      </option>
+                      <option value="Women's Health">Women's Health</option>
                     </select>
                   </div>
 
@@ -89,23 +133,27 @@ const Hero = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Select Location
                     </label>
-                    <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-                      <option>Choose your location</option>
-                      <option>Dublin</option>
-                      <option>Cork</option>
-                      <option>Galway</option>
-                      <option>Limerick</option>
-                      <option>Waterford</option>
-                      <option>Kilkenny</option>
-                      <option>Drogheda</option>
-                      <option>Dundalk</option>
-                      <option>Bray</option>
-                      <option>Navan</option>
-                      <option>Ennis</option>
-                      <option>Tralee</option>
-                      <option>Carlow</option>
-                      <option>Naas</option>
-                      <option>Athlone</option>
+                    <select
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      value={selectedLocation}
+                      onChange={(e) => setSelectedLocation(e.target.value)}
+                    >
+                      <option value="">Choose your location</option>
+                      <option value="Dublin">Dublin</option>
+                      <option value="Cork">Cork</option>
+                      <option value="Galway">Galway</option>
+                      <option value="Limerick">Limerick</option>
+                      <option value="Waterford">Waterford</option>
+                      <option value="Kilkenny">Kilkenny</option>
+                      <option value="Drogheda">Drogheda</option>
+                      <option value="Dundalk">Dundalk</option>
+                      <option value="Bray">Bray</option>
+                      <option value="Navan">Navan</option>
+                      <option value="Ennis">Ennis</option>
+                      <option value="Tralee">Tralee</option>
+                      <option value="Carlow">Carlow</option>
+                      <option value="Naas">Naas</option>
+                      <option value="Athlone">Athlone</option>
                     </select>
                   </div>
 
@@ -116,10 +164,16 @@ const Hero = () => {
                     <input
                       type="date"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      value={selectedDate}
+                      onChange={(e) => setSelectedDate(e.target.value)}
+                      min={new Date().toISOString().split("T")[0]} // Prevent past dates
                     />
                   </div>
 
-                  <button className="w-full bg-gradient-to-r from-[#7ce3b1] to-[#6dd4a2] hover:from-[#6dd4a2] hover:to-[#5eb893] text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                  <button
+                    onClick={handleFindPhysiotherapists}
+                    className="w-full bg-gradient-to-r from-[#7ce3b1] to-[#6dd4a2] hover:from-[#6dd4a2] hover:to-[#5eb893] text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
                     Find Available physiotherapists
                   </button>
                 </div>

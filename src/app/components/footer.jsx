@@ -25,10 +25,13 @@ const Footer = () => {
           {/* Company Info */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-blue-500 rounded-lg flex items-center justify-center">
-                <Heart className="h-6 w-6 text-white" />
+              <div className="w-24 h-24 rounded-lg flex items-center justify-center overflow-hidden">
+                <img
+                  src="/logo.png"
+                  alt="UNIPHY Logo"
+                  className="w-full h-full object-contain"
+                />
               </div>
-              <span className="text-2xl font-bold text-gray-900">UNIPHY</span>
             </div>
             <p className="text-gray-600 leading-relaxed max-w-md">
               Connecting patients with qualified physiotherapists for better

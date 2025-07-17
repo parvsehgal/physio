@@ -14,9 +14,8 @@ const Header = () => {
             <img
               src="/logo.png"
               alt="UNIPHY Logo"
-              className="h-18 w-18 translate-y-2 "
+              className="h-20 w-20 translate-y--9 translate-x-6"
             />
-            <span className="text-2xl font-bold text-gray-900">UNIPHY</span>
           </div>
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
