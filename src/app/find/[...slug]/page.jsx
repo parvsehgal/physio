@@ -319,7 +319,7 @@ const PhysiotherapyBookingPage = ({ params }) => {
       rating: 4.8,
       reviews: 145,
       location: "Limerick",
-      image: "/api/placeholder/120/120",
+      image: "/profile.png",
       qualifications: ["MSc Geriatric Physiotherapy", "Falls Prevention Cert"],
       availableSlots: ["10:00 AM", "02:00 PM", "04:00 PM"],
       price: "€80",
