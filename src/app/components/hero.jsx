@@ -1,4 +1,5 @@
 "use client";
+import { requireAuth } from "@/lib/auth";
 import { Calendar, MapPin, Users } from "lucide-react";
 import { useState } from "react";
 
@@ -8,8 +9,13 @@ const Hero = () => {
   const [selectedDate, setSelectedDate] = useState("");
 
   // Function to handle navigation
-  const handleFindPhysiotherapists = () => {
+  const handleFindPhysiotherapists = async () => {
     // Validate form fields
+    const bool = await requireAuth();
+    if (bool) {
+      console.log(bool);
+      return;
+    }
     if (!selectedService || !selectedLocation || !selectedDate) {
       alert("Please fill in all fields before searching");
       return;

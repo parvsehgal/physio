@@ -268,6 +268,7 @@ export async function getCurrentUser() {
 
 // Helper function to require authentication
 export async function requireAuth() {
+  console.log("here");
   const user = await getCurrentUser();
 
   if (!user) {
