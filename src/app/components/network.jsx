@@ -1,3 +1,4 @@
+import { requireAuth } from "@/lib/auth";
 const Network = () => {
   return (
     <section className="py-20 px-4 bg-white">
@@ -9,6 +10,7 @@ const Network = () => {
               <span className="block" style={{ color: "#7ce3b1" }}>
                 Network
               </span>
+              <button onClick={requireAuth}>testing</button>
             </h2>
             <p className="text-xl text-gray-600 leading-relaxed">
               Our platform connects you with a vast network of certified
@@ -49,7 +51,7 @@ const Network = () => {
           <div className="relative">
             <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 shadow-lg">
               <img
-                src="/networkimg.png"
+                src="/green.png"
                 alt="Healthcare Network Diagram"
                 className="w-full h-auto rounded-lg"
               />
