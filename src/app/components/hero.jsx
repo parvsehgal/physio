@@ -1,7 +1,7 @@
 "use client";
 import { requireAuth } from "../../lib/auth";
 import { getSpecializations } from "../../lib/services/specialization";
-import { getCities } from "@/lib/services/city";
+import { getCities } from "../../lib/services/city";
 import { Calendar, MapPin, Users } from "lucide-react";
 import { useState, useEffect } from "react";
 
