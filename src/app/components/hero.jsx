@@ -12,10 +12,6 @@ const Hero = () => {
   const handleFindPhysiotherapists = async () => {
     // Validate form fields
     const bool = await requireAuth();
-    if (bool) {
-      console.log(bool);
-      return;
-    }
     if (!selectedService || !selectedLocation || !selectedDate) {
       alert("Please fill in all fields before searching");
       return;

@@ -223,7 +223,7 @@ const LoginPage = () => {
                 <p className="text-gray-600">
                   Don't have an account?{" "}
                   <a
-                    href="#"
+                    href="/signup"
                     className="text-emerald-600 hover:text-emerald-500 font-semibold transition-colors duration-200"
                   >
                     Sign up here
