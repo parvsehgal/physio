@@ -1,7 +1,7 @@
 "use client";
 import { Calendar, MapPin, Users, Mail, Lock, User, Phone } from "lucide-react";
 import { useState, useEffect } from "react";
-import { signup, getCurrentUser } from "@/lib/auth";
+import { signup, getCurrentUser } from "../../lib/auth";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({

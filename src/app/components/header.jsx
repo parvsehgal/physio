@@ -1,149 +1,21 @@
 "use client";
 import { Menu, X, User, LogOut } from "lucide-react";
-import { useState, useEffect } from "react";
-import { logout } from "../../lib/auth"; // Adjust the import path to your auth file
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { logout } from "../../lib/auth"; // Adjust the import path as needed
 
-const Header = () => {
+const Header = ({ user = null }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
-  // Function to fetch current user
-  const fetchCurrentUser = async () => {
-    try {
-      // You'll need to create an API route or expose getCurrentUser differently
-      // since server actions can't be called directly from client components
-      const response = await fetch("/api/user", {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-      } else {
-        setUser(null);
-      }
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCurrentUser();
-  }, []);
+  const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen);
 
   const handleLogout = async () => {
     try {
       await logout();
-      setUser(null);
-      router.refresh(); // Refresh the page to update the state
     } catch (error) {
-      console.error("Logout error:", error);
-      // Force redirect even if there's an error
-      window.location.href = "/login";
+      console.error("Logout failed:", error);
+      // The logout function already handles redirect, but we can add error handling here if needed
     }
-  };
-
-  const handleSignIn = () => {
-    router.push("/login");
-  };
-
-  const AuthButtons = () => {
-    if (loading) {
-      return (
-        <div className="hidden md:flex items-center space-x-4">
-          <div className="animate-pulse bg-gray-200 h-8 w-16 rounded"></div>
-          <div className="animate-pulse bg-gray-200 h-8 w-20 rounded-lg"></div>
-        </div>
-      );
-    }
-
-    if (user) {
-      return (
-        <div className="hidden md:flex items-center space-x-4">
-          <div className="flex items-center space-x-2 text-gray-700">
-            <User className="h-5 w-5" />
-            <span className="font-medium">
-              {user.firstName} {user.lastName}
-            </span>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center space-x-2 text-gray-700 hover:text-red-600 px-4 py-2 font-medium transition-colors duration-200"
-          >
-            <LogOut className="h-4 w-4" />
-            <span>Logout</span>
-          </button>
-        </div>
-      );
-    }
-
-    return (
-      <div className="hidden md:flex items-center space-x-4">
-        <button
-          onClick={handleSignIn}
-          className="text-gray-700 hover:text-[#7ce3b1] px-4 py-2 font-medium transition-colors duration-200"
-        >
-          Sign In
-        </button>
-        <button className="bg-[#7ce3b1] hover:bg-[#6dd4a2] text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200">
-          Book Now
-        </button>
-      </div>
-    );
-  };
-
-  const MobileAuthButtons = () => {
-    if (loading) {
-      return (
-        <div className="flex flex-col space-y-2 pt-4 border-t border-gray-100">
-          <div className="animate-pulse bg-gray-200 h-8 w-full rounded"></div>
-          <div className="animate-pulse bg-gray-200 h-8 w-full rounded-lg"></div>
-        </div>
-      );
-    }
-
-    if (user) {
-      return (
-        <div className="flex flex-col space-y-2 pt-4 border-t border-gray-100">
-          <div className="flex items-center space-x-2 text-gray-700 px-4 py-2">
-            <User className="h-5 w-5" />
-            <span className="font-medium">
-              {user.firstName} {user.lastName}
-            </span>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center space-x-2 text-gray-700 hover:text-red-600 px-4 py-2 font-medium text-left transition-colors duration-200"
-          >
-            <LogOut className="h-4 w-4" />
-            <span>Logout</span>
-          </button>
-        </div>
-      );
-    }
-
-    return (
-      <div className="flex flex-col space-y-2 pt-4 border-t border-gray-100">
-        <button
-          onClick={handleSignIn}
-          className="text-gray-700 hover:text-[#7ce3b1] px-4 py-2 font-medium text-left transition-colors duration-200"
-        >
-          Sign In
-        </button>
-        <button className="bg-[#7ce3b1] hover:bg-[#6dd4a2] text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200">
-          Book Now
-        </button>
-      </div>
-    );
   };
 
   return (
@@ -186,8 +58,62 @@ const Header = () => {
             </a>
           </nav>
 
-          {/* Desktop Auth Buttons */}
-          <AuthButtons />
+          {/* Desktop Auth Section */}
+          <div className="hidden md:flex items-center space-x-4">
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={toggleUserMenu}
+                  className="flex items-center space-x-3 text-gray-700 hover:text-[#7ce3b1] px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                >
+                  <div className="w-10 h-10 bg-[#7ce3b1] rounded-full flex items-center justify-center">
+                    <span className="text-white font-medium text-sm">
+                      {user.firstName?.charAt(0)?.toUpperCase()}
+                      {user.lastName?.charAt(0)?.toUpperCase()}
+                    </span>
+                  </div>
+                  <span className="font-medium">{`${user.firstName} ${user.lastName}`}</span>
+                </button>
+
+                {/* User Dropdown Menu */}
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <p className="text-sm font-medium text-gray-900">{`${user.firstName} ${user.lastName}`}</p>
+                      <p className="text-sm text-gray-500">{user.email}</p>
+                      {user.role && (
+                        <p className="text-xs text-gray-400 capitalize">
+                          {user.role.name}
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200 flex items-center space-x-2"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <a
+                  href="/login"
+                  className="text-gray-700 hover:text-[#7ce3b1] px-4 py-2 font-medium transition-colors duration-200"
+                >
+                  Sign In
+                </a>
+                <a
+                  href="/signup"
+                  className="bg-[#7ce3b1] hover:bg-[#6dd4a2] text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
+                >
+                  Book Now
+                </a>
+              </>
+            )}
+          </div>
 
           {/* Mobile Menu button */}
           <button
@@ -231,8 +157,52 @@ const Header = () => {
                 Contact
               </a>
 
-              {/* Mobile Auth Buttons */}
-              <MobileAuthButtons />
+              {/* Mobile Auth Section */}
+              <div className="pt-4 border-t border-gray-100">
+                {user ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-3 px-2 py-2">
+                      <div className="w-12 h-12 bg-[#7ce3b1] rounded-full flex items-center justify-center">
+                        <span className="text-white font-medium">
+                          {user.firstName?.charAt(0)?.toUpperCase()}
+                          {user.lastName?.charAt(0)?.toUpperCase()}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900">{`${user.firstName} ${user.lastName}`}</p>
+                        <p className="text-sm text-gray-500">{user.email}</p>
+                        {user.role && (
+                          <p className="text-xs text-gray-400 capitalize">
+                            {user.role.name}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left text-red-600 hover:text-red-700 font-medium py-2 px-2 transition-colors duration-200 flex items-center space-x-2"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col space-y-2">
+                    <a
+                      href="/login"
+                      className="text-gray-700 hover:text-[#7ce3b1] px-4 py-2 font-medium text-left transition-colors duration-200"
+                    >
+                      Sign In
+                    </a>
+                    <a
+                      href="/signup"
+                      className="bg-[#7ce3b1] hover:bg-[#6dd4a2] text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200 text-center"
+                    >
+                      Book Now
+                    </a>
+                  </div>
+                )}
+              </div>
             </nav>
           </div>
         )}

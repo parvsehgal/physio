@@ -25,10 +25,10 @@ const Footer = () => {
           {/* Company Info */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-24 h-24 rounded-lg flex items-center justify-center overflow-hidden">
+              <div className="w-36 h-36 rounded-lg flex items-center justify-center overflow-hidden">
                 <img
                   src="/logo.png"
-                  alt="UNIPHY Logo"
+                  alt="Abhaile Physiotherapy Logo"
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -43,15 +43,15 @@ const Footer = () => {
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-gray-600">
                 <Phone className="h-4 w-4" />
-                <span>1-800-UNIPHY (864-7479)</span>
+                <span>1-800-ABHAILE (864-7479)</span>
               </div>
               <div className="flex items-center gap-2 text-gray-600">
                 <Mail className="h-4 w-4" />
-                <span>support@uniphy.com</span>
+                <span>info@abhailephysiotherapy.com</span>
               </div>
               <div className="flex items-center gap-2 text-gray-600">
                 <MapPin className="h-4 w-4" />
-                <span>New York, NY | Available Nationwide</span>
+                <span>Dublin, Ireland | Available Nationwide</span>
               </div>
             </div>
 
@@ -403,7 +403,9 @@ const Footer = () => {
         <div className="border-t border-gray-200 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-4 text-sm text-gray-500">
-              <span>&copy; 2024 UNIPHY. All rights reserved.</span>
+              <span>
+                &copy; 2024 Abhaile Physiotherapy. All rights reserved.
+              </span>
               <div className="flex items-center space-x-1">
                 <Globe className="h-4 w-4" />
                 <span>English (US)</span>

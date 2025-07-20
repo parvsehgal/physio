@@ -1,6 +1,6 @@
 "use client";
-import { requireAuth } from "@/lib/auth";
-import { getSpecializations } from "@/lib/services/specialization";
+import { requireAuth } from "../../lib/auth";
+import { getSpecializations } from "../../lib/services/specialization";
 import { getCities } from "@/lib/services/city";
 import { Calendar, MapPin, Users } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -18,7 +18,7 @@ const Hero = () => {
       try {
         const [specializationsRes, citiesRes] = await Promise.all([
           getSpecializations(),
-          getCities()
+          getCities(),
         ]);
 
         if (specializationsRes.success) {
@@ -29,7 +29,7 @@ const Hero = () => {
           setCities(citiesRes.data);
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
-import { login, getCurrentUser } from "@/lib/auth";
+import { login, getCurrentUser } from "../../lib/auth";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -132,11 +132,10 @@ const LoginPage = () => {
               {/* Message Display */}
               {message && (
                 <div
-                  className={`p-3 rounded-lg text-center ${
-                    message.includes("successful")
+                  className={`p-3 rounded-lg text-center ${message.includes("successful")
                       ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                       : "bg-red-50 text-red-700 border border-red-200"
-                  }`}
+                    }`}
                 >
                   {message}
                 </div>
@@ -156,9 +155,8 @@ const LoginPage = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 ${
-                        errors.email ? "border-red-500" : "border-gray-300"
-                      }`}
+                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 ${errors.email ? "border-red-500" : "border-gray-300"
+                        }`}
                       placeholder="Enter your email"
                       disabled={isLoading}
                     />
@@ -182,9 +180,8 @@ const LoginPage = () => {
                       name="password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 ${
-                        errors.password ? "border-red-500" : "border-gray-300"
-                      }`}
+                      className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 ${errors.password ? "border-red-500" : "border-gray-300"
+                        }`}
                       placeholder="Enter your password"
                       disabled={isLoading}
                     />
