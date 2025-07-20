@@ -1,7 +1,7 @@
 "use client";
 import { Calendar, MapPin, Users, Mail, Lock, User, Phone } from "lucide-react";
-import { useState } from "react";
-import { signup } from "@/lib/auth";
+import { useState, useEffect } from "react";
+import { signup, getCurrentUser } from "@/lib/auth";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +19,34 @@ const SignupPage = () => {
 
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [shouldShowSignup, setShouldShowSignup] = useState(false);
+
+  // Check if user is already logged in on component mount
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const user = await getCurrentUser();
+
+        if (user) {
+          // User is authenticated, redirect immediately without showing signup form
+          window.location.href = "/";
+          return;
+        }
+
+        // User is not authenticated, safe to show signup form
+        setShouldShowSignup(true);
+      } catch (error) {
+        console.error("Auth check error:", error);
+        // Show signup form if auth check fails
+        setShouldShowSignup(true);
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -70,29 +98,47 @@ const SignupPage = () => {
     e.preventDefault();
 
     if (validateForm()) {
+      setIsLoading(true);
+
       const formDataObj = new FormData();
-      formDataObj.append('email', formData.email);
-      formDataObj.append('password', formData.password);
-      formDataObj.append('firstName', formData.firstName);
-      formDataObj.append('lastName', formData.lastName);
-      formDataObj.append('phone', formData.phone);
-      formDataObj.append('dateOfBirth', formData.dateOfBirth);
+      formDataObj.append("email", formData.email);
+      formDataObj.append("password", formData.password);
+      formDataObj.append("firstName", formData.firstName);
+      formDataObj.append("lastName", formData.lastName);
+      formDataObj.append("phone", formData.phone);
+      formDataObj.append("dateOfBirth", formData.dateOfBirth);
 
       try {
         const response = await signup(formDataObj);
-        
+
         if (response.success) {
-          window.location.href = '/';
+          window.location.href = "/";
         } else {
           setErrors(response.errors || {});
           alert(response.message);
         }
       } catch (error) {
-        console.error('Signup error:', error);
-        alert('Failed to create account. Please try again.');
+        console.error("Signup error:", error);
+        alert("Failed to create account. Please try again.");
+      } finally {
+        setIsLoading(false);
       }
     }
   };
+
+  // Show loading spinner while checking auth status
+  if (isCheckingAuth || !shouldShowSignup) {
+    return (
+      <section className="min-h-screen relative bg-gradient-to-br from-emerald-50 via-white to-green-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-emerald-600 font-medium">
+            Checking authentication...
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative bg-gradient-to-br from-emerald-50 via-white to-green-50 min-h-screen py-20 px-4 overflow-hidden">
@@ -420,9 +466,9 @@ const SignupPage = () => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className={`w-full bg-gradient-to-r from-[#7ce3b1] to-[#6dd4a2] hover:from-[#6dd4a2] hover:to-[#5eb893] text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`w-full bg-gradient-to-r from-[#7ce3b1] to-[#6dd4a2] hover:from-[#6dd4a2] hover:to-[#5eb893] text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
-                  {isLoading ? 'Creating Account...' : 'Create Account'}
+                  {isLoading ? "Creating Account..." : "Create Account"}
                 </button>
 
                 <div className="text-center text-sm text-gray-600">

@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
-import { login } from "@/lib/auth";
+import { login, getCurrentUser } from "@/lib/auth";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -12,6 +12,34 @@ const LoginPage = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [shouldShowLogin, setShouldShowLogin] = useState(false);
+
+  // Check if user is already logged in on component mount
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const user = await getCurrentUser();
+
+        if (user) {
+          // User is authenticated, redirect immediately without showing login form
+          window.location.href = "/";
+          return;
+        }
+
+        // User is not authenticated, safe to show login form
+        setShouldShowLogin(true);
+      } catch (error) {
+        console.error("Auth check error:", error);
+        // Show login form if auth check fails
+        setShouldShowLogin(true);
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -50,12 +78,26 @@ const LoginPage = () => {
         }
       }
     } catch (error) {
-        console.error('Login error:', error);
-        setMessage("An unexpected error occurred. Please try again later.");
-      } finally {
-        setIsLoading(false);
-      }
+      console.error("Login error:", error);
+      setMessage("An unexpected error occurred. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  // Show loading spinner while checking auth status
+  if (isCheckingAuth || !shouldShowLogin) {
+    return (
+      <section className="min-h-screen relative bg-gradient-to-br from-emerald-50 via-white to-green-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-emerald-600 font-medium">
+            Checking authentication...
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="min-h-screen relative bg-gradient-to-br from-emerald-50 via-white to-green-50 flex items-center justify-center py-12 px-4 overflow-hidden">
