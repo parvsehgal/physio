@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
+import { login } from "@/lib/auth";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -38,31 +39,22 @@ const LoginPage = () => {
       formDataObj.append("email", formData.email);
       formDataObj.append("password", formData.password);
 
-      // In a real app, you'd call your server action here
-      // const result = await login(formDataObj);
+      const result = await login(formDataObj);
 
-      // Simulating server response for demo
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Mock validation errors for demo
-      if (!formData.email) {
-        setErrors({ email: ["Email is required"] });
-        setIsLoading(false);
-        return;
+      if (result.success) {
+        window.location.href = "/";
+      } else {
+        setMessage(result.message);
+        if (result.errors) {
+          setErrors(result.errors);
+        }
       }
-      if (!formData.password) {
-        setErrors({ password: ["Password is required"] });
-        setIsLoading(false);
-        return;
-      }
-
-      // Mock success
-      setMessage("Login successful! Redirecting...");
     } catch (error) {
-      setMessage("Login failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+        console.error('Login error:', error);
+        setMessage("An unexpected error occurred. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
   };
 
   return (
@@ -109,7 +101,7 @@ const LoginPage = () => {
               )}
 
               {/* Login Form */}
-              <div className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Email Field */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -216,7 +208,7 @@ const LoginPage = () => {
                     </>
                   )}
                 </button>
-              </div>
+              </form>
 
               {/* Sign Up Link */}
               <div className="text-center">

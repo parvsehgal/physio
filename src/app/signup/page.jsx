@@ -1,6 +1,7 @@
 "use client";
 import { Calendar, MapPin, Users, Mail, Lock, User, Phone } from "lucide-react";
 import { useState } from "react";
+import { signup } from "@/lib/auth";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +18,7 @@ const SignupPage = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -64,15 +66,31 @@ const SignupPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
     if (validateForm()) {
-      // Here you would typically send the data to your backend
-      console.log("Signup data:", formData);
-      alert("Account created successfully! Welcome to our platform.");
-      // Redirect to dashboard or login page
-      // window.location.href = "/dashboard";
+      const formDataObj = new FormData();
+      formDataObj.append('email', formData.email);
+      formDataObj.append('password', formData.password);
+      formDataObj.append('firstName', formData.firstName);
+      formDataObj.append('lastName', formData.lastName);
+      formDataObj.append('phone', formData.phone);
+      formDataObj.append('dateOfBirth', formData.dateOfBirth);
+
+      try {
+        const response = await signup(formDataObj);
+        
+        if (response.success) {
+          window.location.href = '/';
+        } else {
+          setErrors(response.errors || {});
+          alert(response.message);
+        }
+      } catch (error) {
+        console.error('Signup error:', error);
+        alert('Failed to create account. Please try again.');
+      }
     }
   };
 
@@ -401,9 +419,10 @@ const SignupPage = () => {
 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-[#7ce3b1] to-[#6dd4a2] hover:from-[#6dd4a2] hover:to-[#5eb893] text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                  disabled={isLoading}
+                  className={`w-full bg-gradient-to-r from-[#7ce3b1] to-[#6dd4a2] hover:from-[#6dd4a2] hover:to-[#5eb893] text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  Create Account
+                  {isLoading ? 'Creating Account...' : 'Create Account'}
                 </button>
 
                 <div className="text-center text-sm text-gray-600">

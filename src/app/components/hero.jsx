@@ -1,12 +1,42 @@
 "use client";
 import { requireAuth } from "@/lib/auth";
+import { getSpecializations } from "@/lib/services/specialization";
+import { getCities } from "@/lib/services/city";
 import { Calendar, MapPin, Users } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Hero = () => {
   const [selectedService, setSelectedService] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [specializations, setSpecializations] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [specializationsRes, citiesRes] = await Promise.all([
+          getSpecializations(),
+          getCities()
+        ]);
+
+        if (specializationsRes.success) {
+          setSpecializations(specializationsRes.data);
+        }
+
+        if (citiesRes.success) {
+          setCities(citiesRes.data);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // Function to handle navigation
   const handleFindPhysiotherapists = async () => {
@@ -111,23 +141,15 @@ const Hero = () => {
                       onChange={(e) => setSelectedService(e.target.value)}
                     >
                       <option value="">Choose your service</option>
-                      <option value="Geriatric Physiotherapy">
-                        Geriatric Physiotherapy
-                      </option>
-                      <option value="Post Surgical Rehabilitation">
-                        Post Surgical Rehabilitation
-                      </option>
-                      <option value="Sports Massage">Sports Massage</option>
-                      <option value="Sports Injuries and Rehabilitation">
-                        Sports Injuries and Rehabilitation
-                      </option>
-                      <option value="Musculoskeletal Physiotherapy">
-                        Musculoskeletal Physiotherapy
-                      </option>
-                      <option value="Pediatric Physiotherapy">
-                        Pediatric Physiotherapy
-                      </option>
-                      <option value="Women's Health">Women's Health</option>
+                      {loading ? (
+                        <option disabled>Loading specializations...</option>
+                      ) : (
+                        specializations.map((spec) => (
+                          <option key={spec.id} value={spec.name}>
+                            {spec.name}
+                          </option>
+                        ))
+                      )}
                     </select>
                   </div>
 
@@ -141,21 +163,15 @@ const Hero = () => {
                       onChange={(e) => setSelectedLocation(e.target.value)}
                     >
                       <option value="">Choose your location</option>
-                      <option value="Dublin">Dublin</option>
-                      <option value="Cork">Cork</option>
-                      <option value="Galway">Galway</option>
-                      <option value="Limerick">Limerick</option>
-                      <option value="Waterford">Waterford</option>
-                      <option value="Kilkenny">Kilkenny</option>
-                      <option value="Drogheda">Drogheda</option>
-                      <option value="Dundalk">Dundalk</option>
-                      <option value="Bray">Bray</option>
-                      <option value="Navan">Navan</option>
-                      <option value="Ennis">Ennis</option>
-                      <option value="Tralee">Tralee</option>
-                      <option value="Carlow">Carlow</option>
-                      <option value="Naas">Naas</option>
-                      <option value="Athlone">Athlone</option>
+                      {loading ? (
+                        <option disabled>Loading cities...</option>
+                      ) : (
+                        cities.map((city) => (
+                          <option key={city.id} value={city.name}>
+                            {city.name}, {city.county}
+                          </option>
+                        ))
+                      )}
                     </select>
                   </div>
 
