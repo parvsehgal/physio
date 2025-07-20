@@ -120,18 +120,67 @@ async function seedCities() {
         longitude: -7.244553,
       },
       {
-        name: "Wexford",
-        county: "Wexford",
-        eircodePrefix: "Y35",
-        latitude: 52.334209,
-        longitude: -6.45772,
+        name: "Drogheda",
+        county: "Louth",
+        eircodePrefix: "A92",
+        latitude: 53.7157,
+        longitude: -6.3491,
       },
       {
-        name: "Sligo",
-        county: "Sligo",
-        eircodePrefix: "F91",
-        latitude: 54.269927,
-        longitude: -8.46947,
+        name: "Dundalk",
+        county: "Louth",
+        eircodePrefix: "A91",
+        latitude: 54.0088,
+        longitude: -6.4023,
+      },
+      {
+        name: "Bray",
+        county: "Wicklow",
+        eircodePrefix: "A98",
+        latitude: 53.2044,
+        longitude: -6.0988,
+      },
+      {
+        name: "Navan",
+        county: "Meath",
+        eircodePrefix: "C15",
+        latitude: 53.6528,
+        longitude: -6.6833,
+      },
+      {
+        name: "Ennis",
+        county: "Clare",
+        eircodePrefix: "V95",
+        latitude: 52.8433,
+        longitude: -8.9869,
+      },
+      {
+        name: "Tralee",
+        county: "Kerry",
+        eircodePrefix: "V92",
+        latitude: 52.2704,
+        longitude: -9.7026,
+      },
+      {
+        name: "Carlow",
+        county: "Carlow",
+        eircodePrefix: "R93",
+        latitude: 52.8408,
+        longitude: -6.9261,
+      },
+      {
+        name: "Naas",
+        county: "Kildare",
+        eircodePrefix: "W91",
+        latitude: 53.2158,
+        longitude: -6.6669,
+      },
+      {
+        name: "Athlone",
+        county: "Westmeath",
+        eircodePrefix: "N37",
+        latitude: 53.4239,
+        longitude: -7.9407,
       },
     ],
   });
@@ -143,49 +192,36 @@ async function seedSpecializations() {
   await prisma.specialization.createMany({
     data: [
       {
-        name: "Sports Physiotherapy",
+        name: "Geriatric Physiotherapy",
         description:
-          "Treatment of sports-related injuries and performance enhancement",
+          "Treatment focused on age-related conditions in elderly patients",
       },
       {
-        name: "Orthopedic Physiotherapy",
-        description: "Treatment of musculoskeletal conditions and injuries",
+        name: "Post Surgical Rehabilitation",
+        description: "Rehabilitation therapy following surgical procedures",
       },
       {
-        name: "Neurological Physiotherapy",
+        name: "Sports Massage",
         description:
-          "Treatment of neurological conditions like stroke, MS, Parkinsons",
+          "Specialized massage techniques for athletes and active individuals",
+      },
+      {
+        name: "Sports Injuries and Rehabilitation",
+        description:
+          "Treatment of sports-related injuries and rehabilitation programs",
+      },
+      {
+        name: "Musculoskeletal Physiotherapy",
+        description: "Treatment of conditions affecting muscles, bones and joints",
       },
       {
         name: "Pediatric Physiotherapy",
         description: "Physiotherapy treatment for children and adolescents",
       },
       {
-        name: "Geriatric Physiotherapy",
+        name: "Women's Health",
         description:
-          "Treatment focused on age-related conditions in elderly patients",
-      },
-      {
-        name: "Cardiopulmonary Physiotherapy",
-        description: "Treatment of heart and lung conditions",
-      },
-      {
-        name: "Manual Therapy",
-        description:
-          "Hands-on treatment techniques including joint mobilization",
-      },
-      {
-        name: "Dry Needling",
-        description:
-          "Treatment using thin needles to treat myofascial trigger points",
-      },
-      {
-        name: "Vestibular Rehabilitation",
-        description: "Treatment of balance and dizziness disorders",
-      },
-      {
-        name: "Pelvic Floor Physiotherapy",
-        description: "Treatment of pelvic floor dysfunction",
+          "Specialized physiotherapy addressing women's health concerns",
       },
     ],
   });
