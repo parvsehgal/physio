@@ -8,11 +8,14 @@ import CTA from "./components/cta";
 import Footer from "./components/footer";
 import BlogsSection from "./components/blogs";
 import IrelandPhysiotherapistMap from "./components/map";
+import { getCurrentUser } from "../lib/auth";
 
-export default function Home() {
+export default async function Home() {
+  const user = await getCurrentUser();
+
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      <Header user={user} />
       <main>
         <Hero />
         <Features />
