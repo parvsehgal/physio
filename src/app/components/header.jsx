@@ -26,7 +26,7 @@ const Header = ({ user = null }) => {
             <img
               src="/logo.png"
               alt="UNIPHY Logo"
-              className="h-30 w-30 translate-y--9 translate-x-12"
+              className="h-40 w-40 translate-y--9 translate-x-12"
             />
           </div>
 
