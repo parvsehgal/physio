@@ -25,7 +25,7 @@ const Footer = () => {
           {/* Company Info */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-36 h-36 rounded-lg flex items-center justify-center overflow-hidden">
+              <div className="w-54 h-54 rounded-lg flex items-center justify-center overflow-hidden">
                 <img
                   src="/logo.png"
                   alt="Abhaile Physiotherapy Logo"
@@ -404,7 +404,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-4 text-sm text-gray-500">
               <span>
-                &copy; 2024 Abhaile Physiotherapy. All rights reserved.
+                &copy; 2025 Abhaile Physiotherapy. All rights reserved.
               </span>
               <div className="flex items-center space-x-1">
                 <Globe className="h-4 w-4" />
