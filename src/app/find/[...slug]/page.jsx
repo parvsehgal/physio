@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Footer from "@/app/components/footer";
 import Header from "@/app/components/header";
+import { getPhysiotherapistsByLocationAndSpecialization, debugDatabaseContents } from "@/lib/actions/physiotherapist";
 
 const PhysiotherapyBookingPage = ({ params }) => {
   // Unwrap params using React.use()
@@ -60,6 +61,9 @@ const PhysiotherapyBookingPage = ({ params }) => {
     location ? location.charAt(0).toUpperCase() + location.slice(1) : "Dublin",
   );
   const [selectedDate, setSelectedDate] = useState(date || "2025-07-20");
+  const [physiotherapists, setPhysiotherapists] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Update state when params change
   useEffect(() => {
@@ -68,6 +72,40 @@ const PhysiotherapyBookingPage = ({ params }) => {
       setSelectedLocation(location.charAt(0).toUpperCase() + location.slice(1));
     if (date) setSelectedDate(date);
   }, [service, location, date]);
+
+  // Fetch physiotherapists when service or location changes
+  useEffect(() => {
+    const fetchPhysiotherapists = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        // Debug: Check what's in the database
+        const debugInfo = await debugDatabaseContents();
+        console.log('Debug info:', debugInfo);
+        
+        const result = await getPhysiotherapistsByLocationAndSpecialization(
+          selectedLocation,
+          selectedService
+        );
+        
+        if (result.success) {
+          setPhysiotherapists(result.data);
+        } else {
+          setError(result.error);
+          setPhysiotherapists([]);
+        }
+      } catch (err) {
+        setError('Failed to fetch physiotherapists');
+        setPhysiotherapists([]);
+        console.error('Fetch error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPhysiotherapists();
+  }, [selectedService, selectedLocation]);
 
   // Service descriptions
   const serviceDescriptions = {
@@ -164,304 +202,8 @@ const PhysiotherapyBookingPage = ({ params }) => {
     },
   };
 
-  // Mock physiotherapists data - comprehensive coverage across locations and services
-  const physiotherapists = [
-    // Dublin Physiotherapists
-    {
-      id: 1,
-      name: "Dr. Sarah Murphy",
-      specialization: "Geriatric Physiotherapy",
-      experience: "12 years",
-      rating: 4.9,
-      reviews: 156,
-      location: "Dublin",
-      image: "/api/placeholder/120/120",
-      qualifications: [
-        "MSc Physiotherapy",
-        "Geriatric Specialist Certification",
-      ],
-      availableSlots: ["09:00 AM", "11:00 AM", "02:00 PM", "04:00 PM"],
-      price: "€80",
-    },
-    {
-      id: 2,
-      name: "Dr. Michael O'Brien",
-      specialization: "Post Surgical Rehabilitation",
-      experience: "8 years",
-      rating: 4.8,
-      reviews: 89,
-      location: "Dublin",
-      image: "/api/placeholder/120/120",
-      qualifications: ["BPhty", "Post-Surgical Rehabilitation Cert"],
-      availableSlots: ["10:00 AM", "01:00 PM", "03:00 PM"],
-      price: "€85",
-    },
-    {
-      id: 3,
-      name: "Dr. Emma Kelly",
-      specialization: "Sports Massage",
-      experience: "6 years",
-      rating: 4.7,
-      reviews: 124,
-      location: "Dublin",
-      image: "/api/placeholder/120/120",
-      qualifications: ["Sports Massage Therapy", "Athletic Performance Cert"],
-      availableSlots: ["08:00 AM", "12:00 PM", "05:00 PM"],
-      price: "€70",
-    },
-    {
-      id: 4,
-      name: "Dr. James Walsh",
-      specialization: "Musculoskeletal Physiotherapy",
-      experience: "15 years",
-      rating: 4.9,
-      reviews: 203,
-      location: "Dublin",
-      image: "/api/placeholder/120/120",
-      qualifications: [
-        "MSc Musculoskeletal Physiotherapy",
-        "Manual Therapy Cert",
-      ],
-      availableSlots: ["09:30 AM", "11:30 AM", "02:30 PM"],
-      price: "€90",
-    },
-    {
-      id: 5,
-      name: "Dr. Rachel Thompson",
-      specialization: "Pediatric Physiotherapy",
-      experience: "9 years",
-      rating: 4.8,
-      reviews: 167,
-      location: "Dublin",
-      image: "/api/placeholder/120/120",
-      qualifications: ["MSc Pediatric Physiotherapy", "Child Development Cert"],
-      availableSlots: ["09:00 AM", "11:00 AM", "02:00 PM"],
-      price: "€75",
-    },
-    {
-      id: 6,
-      name: "Dr. Catherine O'Sullivan",
-      specialization: "Women's Health",
-      experience: "11 years",
-      rating: 4.9,
-      reviews: 189,
-      location: "Dublin",
-      image: "/api/placeholder/120/120",
-      qualifications: ["MSc Women's Health", "Pelvic Floor Specialist"],
-      availableSlots: ["10:00 AM", "01:00 PM", "04:00 PM"],
-      price: "€85",
-    },
-    {
-      id: 7,
-      name: "Dr. Kevin Murphy",
-      specialization: "Sports Injuries and Rehabilitation",
-      experience: "10 years",
-      rating: 4.8,
-      reviews: 134,
-      location: "Dublin",
-      image: "/api/placeholder/120/120",
-      qualifications: ["MSc Sports Physiotherapy", "Sports Injury Specialist"],
-      availableSlots: ["08:30 AM", "12:30 PM", "04:30 PM"],
-      price: "€80",
-    },
-
-    // Limerick Physiotherapists
-    {
-      id: 8,
-      name: "Dr. Lisa Ryan",
-      specialization: "Post Surgical Rehabilitation",
-      experience: "10 years",
-      rating: 4.8,
-      reviews: 142,
-      location: "Limerick",
-      image: "/api/placeholder/120/120",
-      qualifications: [
-        "MSc Physiotherapy",
-        "Post-Surgical Rehabilitation Cert",
-      ],
-      availableSlots: ["09:00 AM", "11:30 AM", "03:00 PM"],
-      price: "€85",
-    },
-    {
-      id: 9,
-      name: "Dr. Patrick Connolly",
-      specialization: "Sports Injuries and Rehabilitation",
-      experience: "7 years",
-      rating: 4.7,
-      reviews: 98,
-      location: "Limerick",
-      image: "/api/placeholder/120/120",
-      qualifications: ["BPhty", "Sports Injury Specialist"],
-      availableSlots: ["08:30 AM", "12:30 PM", "04:30 PM"],
-      price: "€75",
-    },
-    {
-      id: 10,
-      name: "Dr. Mary O'Connor",
-      specialization: "Musculoskeletal Physiotherapy",
-      experience: "13 years",
-      rating: 4.9,
-      reviews: 178,
-      location: "Limerick",
-      image: "/api/placeholder/120/120",
-      qualifications: [
-        "MSc Musculoskeletal Physiotherapy",
-        "Manual Therapy Cert",
-      ],
-      availableSlots: ["09:00 AM", "01:00 PM", "03:30 PM"],
-      price: "€85",
-    },
-    {
-      id: 11,
-      name: "Dr. Sean McCarthy",
-      specialization: "Geriatric Physiotherapy",
-      experience: "14 years",
-      rating: 4.8,
-      reviews: 145,
-      location: "Limerick",
-      image: "/profile.png",
-      qualifications: ["MSc Geriatric Physiotherapy", "Falls Prevention Cert"],
-      availableSlots: ["10:00 AM", "02:00 PM", "04:00 PM"],
-      price: "€80",
-    },
-
-    // Galway Physiotherapists
-    {
-      id: 12,
-      name: "Dr. Aoife Brennan",
-      specialization: "Musculoskeletal Physiotherapy",
-      experience: "11 years",
-      rating: 4.9,
-      reviews: 156,
-      location: "Galway",
-      image: "/api/placeholder/120/120",
-      qualifications: [
-        "MSc Musculoskeletal Physiotherapy",
-        "Dry Needling Cert",
-      ],
-      availableSlots: ["09:00 AM", "11:30 AM", "02:30 PM"],
-      price: "€85",
-    },
-    {
-      id: 13,
-      name: "Dr. Conor Fitzgerald",
-      specialization: "Sports Injuries and Rehabilitation",
-      experience: "8 years",
-      rating: 4.7,
-      reviews: 112,
-      location: "Galway",
-      image: "/api/placeholder/120/120",
-      qualifications: ["BPhty", "Sports Rehabilitation Specialist"],
-      availableSlots: ["08:00 AM", "12:00 PM", "05:00 PM"],
-      price: "€75",
-    },
-    {
-      id: 14,
-      name: "Dr. Siobhan Walsh",
-      specialization: "Women's Health",
-      experience: "9 years",
-      rating: 4.8,
-      reviews: 134,
-      location: "Galway",
-      image: "/api/placeholder/120/120",
-      qualifications: ["MSc Women's Health", "Prenatal Specialist"],
-      availableSlots: ["09:30 AM", "01:30 PM", "04:30 PM"],
-      price: "€80",
-    },
-    {
-      id: 15,
-      name: "Dr. Declan O'Malley",
-      specialization: "Post Surgical Rehabilitation",
-      experience: "12 years",
-      rating: 4.8,
-      reviews: 167,
-      location: "Galway",
-      image: "/api/placeholder/120/120",
-      qualifications: ["MSc Physiotherapy", "Orthopedic Specialist"],
-      availableSlots: ["10:30 AM", "01:00 PM", "03:00 PM"],
-      price: "€85",
-    },
-    {
-      id: 16,
-      name: "Dr. Niamh Kelly",
-      specialization: "Pediatric Physiotherapy",
-      experience: "7 years",
-      rating: 4.7,
-      reviews: 89,
-      location: "Galway",
-      image: "/api/placeholder/120/120",
-      qualifications: [
-        "MSc Pediatric Physiotherapy",
-        "Early Intervention Cert",
-      ],
-      availableSlots: ["09:00 AM", "11:00 AM", "02:00 PM"],
-      price: "€75",
-    },
-    {
-      id: 17,
-      name: "Dr. Ronan Byrne",
-      specialization: "Geriatric Physiotherapy",
-      experience: "16 years",
-      rating: 4.9,
-      reviews: 198,
-      location: "Galway",
-      image: "/api/placeholder/120/120",
-      qualifications: ["MSc Geriatric Physiotherapy", "Dementia Care Cert"],
-      availableSlots: ["08:30 AM", "10:30 AM", "02:30 PM"],
-      price: "€85",
-    },
-    {
-      id: 18,
-      name: "Dr. Grainne Murphy",
-      specialization: "Sports Massage",
-      experience: "5 years",
-      rating: 4.6,
-      reviews: 76,
-      location: "Galway",
-      image: "/api/placeholder/120/120",
-      qualifications: ["Sports Massage Therapy", "Deep Tissue Specialist"],
-      availableSlots: ["08:00 AM", "12:00 PM", "06:00 PM"],
-      price: "€65",
-    },
-
-    // Cork Physiotherapists
-    {
-      id: 19,
-      name: "Dr. Eamon O'Sullivan",
-      specialization: "Musculoskeletal Physiotherapy",
-      experience: "14 years",
-      rating: 4.9,
-      reviews: 187,
-      location: "Cork",
-      image: "/api/placeholder/120/120",
-      qualifications: [
-        "MSc Musculoskeletal Physiotherapy",
-        "McKenzie Method Cert",
-      ],
-      availableSlots: ["09:00 AM", "11:00 AM", "03:00 PM"],
-      price: "€85",
-    },
-    {
-      id: 20,
-      name: "Dr. Fiona Crowley",
-      specialization: "Women's Health",
-      experience: "10 years",
-      rating: 4.8,
-      reviews: 145,
-      location: "Cork",
-      image: "/api/placeholder/120/120",
-      qualifications: ["MSc Women's Health", "Continence Specialist"],
-      availableSlots: ["10:00 AM", "01:00 PM", "04:00 PM"],
-      price: "€80",
-    },
-  ];
-
-  // Filter physiotherapists based on selected service and location only (no date filtering)
-  const filteredPhysiotherapists = physiotherapists.filter(
-    (therapist) =>
-      therapist.specialization === selectedService &&
-      therapist.location.toLowerCase() === selectedLocation.toLowerCase(),
-  );
+  // Since we fetch filtered data from server, no client-side filtering needed
+  const filteredPhysiotherapists = physiotherapists;
 
   const currentService =
     serviceDescriptions[selectedService] ||
@@ -537,8 +279,37 @@ const PhysiotherapyBookingPage = ({ params }) => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {filteredPhysiotherapists.map((therapist) => (
+        {/* Loading State */}
+        {loading && (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
+            <span className="ml-3 text-gray-600">Loading physiotherapists...</span>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !loading && (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">⚠️</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Error Loading Data
+            </h3>
+            <p className="text-gray-600 mb-4">
+              {error}
+            </p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold"
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+
+        {/* Physiotherapists Grid */}
+        {!loading && !error && (
+          <div className="grid md:grid-cols-2 gap-6">
+            {filteredPhysiotherapists.map((therapist) => (
             <div
               key={therapist.id}
               className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden"
@@ -631,10 +402,11 @@ const PhysiotherapyBookingPage = ({ params }) => {
               </div>
             </div>
           ))}
-        </div>
+          </div>
+        )}
 
         {/* No Results Message */}
-        {filteredPhysiotherapists.length === 0 && (
+        {!loading && !error && filteredPhysiotherapists.length === 0 && (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">😔</div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">

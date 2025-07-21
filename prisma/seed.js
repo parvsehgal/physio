@@ -330,46 +330,52 @@ async function seedUsers() {
     ],
   });
 
-  // Create physiotherapists
+  // Create physiotherapists - 4 per specialization per city (420 total: 7 specializations × 15 cities × 4 therapists)
+  const cities = await prisma.city.findMany();
+  const specializations = await prisma.specialization.findMany();
+  const firstNames = ["Emily", "David", "Lisa", "Michael", "Sarah", "John", "Maria", "James", "Anna", "Robert", "Claire", "Patrick", "Emma", "Thomas", "Jennifer", "Kevin", "Sophie", "Daniel", "Rachel", "Brian", "Catherine", "William", "Grace", "Sean", "Michelle", "Brian", "Aoife", "Conor", "Siobhan", "Declan", "Niamh", "Ronan", "Grainne", "Eamon", "Fiona", "Ciaran", "Mairead", "Padraig", "Sinead", "Colm"];
+  const lastNames = ["Johnson", "Murphy", "Kelly", "O'Brien", "Walsh", "Ryan", "McCarthy", "O'Sullivan", "Byrne", "Connor", "Doyle", "Fitzgerald", "Gallagher", "Lynch", "Murray", "Quinn", "Reilly", "Sullivan", "Casey", "Dunne", "Clarke", "Brennan", "Doherty", "Hayes", "Griffin", "Kenny", "Flanagan", "Moloney", "Carroll", "Hickey", "Brady", "Nolan", "Cunningham", "Power", "Foley", "McDonagh", "Sheehan", "Clancy", "McNamara", "Hogan"];
+  
+  const physiotherapistUsers = [];
+  let overallIndex = 0;
+  
+  // Create 4 physiotherapists for each specialization in each city
+  for (let cityIndex = 0; cityIndex < cities.length; cityIndex++) {
+    for (let specIndex = 0; specIndex < specializations.length; specIndex++) {
+      for (let physioIndex = 0; physioIndex < 4; physioIndex++) {
+        const firstName = firstNames[overallIndex % firstNames.length];
+        const lastName = lastNames[overallIndex % lastNames.length];
+        const phoneNumber = `+35387${String(1234571 + overallIndex).slice(-7)}`;
+        const birthYear = 1970 + (overallIndex % 20);
+        const gender = overallIndex % 2 === 0 ? "Female" : "Male";
+        
+        physiotherapistUsers.push({
+          email: `dr.${firstName.toLowerCase()}.${lastName.toLowerCase()}${overallIndex}@physio.ie`,
+          passwordHash: hashedPassword,
+          firstName: firstName,
+          lastName: lastName,
+          phone: phoneNumber,
+          dateOfBirth: new Date(`${birthYear}-${String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}`),
+          gender: gender,
+          roleId: physioRole.id,
+          emailVerified: true,
+          phoneVerified: true,
+          // Store city and specialization index to use later
+          _cityIndex: cityIndex,
+          _specIndex: specIndex
+        });
+        
+        overallIndex++;
+      }
+    }
+  }
+  
   await prisma.user.createMany({
-    data: [
-      {
-        email: "dr.emily.johnson@physio.ie",
-        passwordHash: hashedPassword,
-        firstName: "Emily",
-        lastName: "Johnson",
-        phone: "+353871234571",
-        dateOfBirth: new Date("1980-04-12"),
-        gender: "Female",
-        roleId: physioRole.id,
-        emailVerified: true,
-        phoneVerified: true,
-      },
-      {
-        email: "dr.david.murphy@physio.ie",
-        passwordHash: hashedPassword,
-        firstName: "David",
-        lastName: "Murphy",
-        phone: "+353871234572",
-        dateOfBirth: new Date("1975-09-25"),
-        gender: "Male",
-        roleId: physioRole.id,
-        emailVerified: true,
-        phoneVerified: true,
-      },
-      {
-        email: "dr.lisa.kelly@physio.ie",
-        passwordHash: hashedPassword,
-        firstName: "Lisa",
-        lastName: "Kelly",
-        phone: "+353871234573",
-        dateOfBirth: new Date("1982-01-18"),
-        gender: "Female",
-        roleId: physioRole.id,
-        emailVerified: true,
-        phoneVerified: true,
-      },
-    ],
+    data: physiotherapistUsers.map(user => {
+      // Remove the temporary indices before creating
+      const { _cityIndex, _specIndex, ...userData } = user;
+      return userData;
+    }),
   });
 
   // Create admin
@@ -392,34 +398,60 @@ async function seedPhysiotherapistProfiles() {
 
   const physios = await prisma.user.findMany({
     where: { role: { name: "Physiotherapist" } },
+    orderBy: { id: 'asc' } // Ensure consistent ordering
   });
 
-  const specializations = await prisma.specialization.findMany();
+  const specializations = await prisma.specialization.findMany({
+    orderBy: { id: 'asc' }
+  });
 
+  const cities = await prisma.city.findMany({
+    orderBy: { id: 'asc' }
+  });
+
+  // Create profiles with proper specialization mapping
+  // Physios are created in order: city0-spec0 (4 physios), city0-spec1 (4 physios), etc.
   for (let i = 0; i < physios.length; i++) {
     const physio = physios[i];
-
-    // Create profile
+    
+    // Calculate which city and specialization this physio should have
+    const cityIndex = Math.floor(i / (specializations.length * 4));
+    const specIndex = Math.floor((i % (specializations.length * 4)) / 4);
+    const physioInGroup = i % 4; // 0-3 within the group of 4 for this spec+city
+    
+    const targetSpecialization = specializations[specIndex];
+    
+    // Create profile with varying rates and experience
     const profile = await prisma.physiotherapistProfile.create({
       data: {
         userId: physio.id,
         coruRegistration: `CORU${String(i + 1).padStart(6, "0")}`,
-        qualification: "BSc Physiotherapy, MSc Sports Physiotherapy",
-        yearsExperience: Math.floor(Math.random() * 20) + 5,
-        bio: `Experienced physiotherapist specializing in comprehensive rehabilitation and patient care. Committed to helping patients achieve their optimal physical function and quality of life.`,
-        hourlyRate: 70 + i * 10,
+        qualification: `BSc Physiotherapy, ${targetSpecialization.name} Specialist`,
+        yearsExperience: 5 + Math.floor(Math.random() * 15), // 5-20 years
+        bio: `Experienced physiotherapist specializing in ${targetSpecialization.name.toLowerCase()}. Committed to helping patients achieve their optimal physical function and quality of life.`,
+        hourlyRate: 65 + Math.floor(Math.random() * 40), // €65-€105
         isVerified: true,
         isAvailable: true,
       },
     });
 
-    // Add 2-3 specializations per physiotherapist
-    const selectedSpecs = specializations.slice(i * 2, i * 2 + 3);
-    for (const spec of selectedSpecs) {
+    // Assign the primary specialization (guaranteed)
+    await prisma.physiotherapistSpecialization.create({
+      data: {
+        physiotherapistId: profile.id,
+        specializationId: targetSpecialization.id,
+      },
+    });
+
+    // 30% chance to add a secondary specialization
+    if (Math.random() < 0.3) {
+      const secondarySpecIndex = (specIndex + 1 + Math.floor(Math.random() * (specializations.length - 1))) % specializations.length;
+      const secondarySpec = specializations[secondarySpecIndex];
+      
       await prisma.physiotherapistSpecialization.create({
         data: {
           physiotherapistId: profile.id,
-          specializationId: spec.id,
+          specializationId: secondarySpec.id,
         },
       });
     }
@@ -430,85 +462,105 @@ async function seedClinics() {
   console.log("🏢 Seeding clinics...");
 
   const cities = await prisma.city.findMany();
-
+  
+  const clinicData = [];
+  
+  for (let i = 0; i < cities.length; i++) {
+    const city = cities[i];
+    const clinicTypes = ["Sports Clinic", "Physiotherapy Centre", "Rehabilitation Clinic", "Wellness Centre", "Health Center"];
+    const streets = ["Main Street", "High Street", "Church Street", "Market Square", "Patrick Street", "O'Connell Street", "Bridge Street", "Cork Road", "Dublin Road", "College Green"];
+    
+    const clinicType = clinicTypes[i % clinicTypes.length];
+    const street = streets[i % streets.length];
+    const streetNumber = Math.floor(Math.random() * 500) + 100;
+    
+    // Generate phone number
+    const phoneNumber = `+353${i < 5 ? '1' : '2'}555${String(1234 + i).slice(-4)}`;
+    
+    // Generate email
+    const cityNameLower = city.name.toLowerCase().replace(/\s/g, '');
+    const email = `info@${cityNameLower}physio.ie`;
+    
+    // Generate eircode
+    const eircode = `${city.eircodePrefix}${String(Math.floor(Math.random() * 999)).padStart(3, '0')}`;
+    
+    // Add slight variation to coordinates
+    const latVariation = (Math.random() - 0.5) * 0.01;
+    const lngVariation = (Math.random() - 0.5) * 0.01;
+    
+    clinicData.push({
+      name: `${city.name} ${clinicType}`,
+      addressLine1: `${streetNumber} ${street}`,
+      cityId: city.id,
+      eircode: eircode,
+      phone: phoneNumber,
+      email: email,
+      websiteUrl: `https://${cityNameLower}physio.ie`,
+      latitude: parseFloat(city.latitude) + latVariation,
+      longitude: parseFloat(city.longitude) + lngVariation,
+    });
+  }
+  
   await prisma.clinic.createMany({
-    data: [
-      {
-        name: "Dublin Sports Clinic",
-        addressLine1: "123 Grafton Street",
-        cityId: cities.find((c) => c.name === "Dublin").id,
-        eircode: "D02XY45",
-        phone: "+35315551234",
-        email: "info@dublinsports.ie",
-        websiteUrl: "https://dublinsports.ie",
-        latitude: 53.3416,
-        longitude: -6.26013,
-      },
-      {
-        name: "Cork Physiotherapy Centre",
-        addressLine1: "456 Patrick Street",
-        cityId: cities.find((c) => c.name === "Cork").id,
-        eircode: "T12AB67",
-        phone: "+35215551234",
-        email: "reception@corkphysio.ie",
-        websiteUrl: "https://corkphysio.ie",
-        latitude: 51.898026,
-        longitude: -8.468493,
-      },
-      {
-        name: "Galway Rehabilitation Clinic",
-        addressLine1: "789 Shop Street",
-        cityId: cities.find((c) => c.name === "Galway").id,
-        eircode: "H91CD89",
-        phone: "+35315551235",
-        email: "hello@galwayrehab.ie",
-        latitude: 53.271889,
-        longitude: -9.048966,
-      },
-      {
-        name: "Limerick Wellness Centre",
-        addressLine1: "321 O'Connell Street",
-        cityId: cities.find((c) => c.name === "Limerick").id,
-        eircode: "V94EF12",
-        phone: "+35315551236",
-        email: "contact@limerickwellness.ie",
-        latitude: 52.661252,
-        longitude: -8.628238,
-      },
-    ],
+    data: clinicData,
   });
 }
 
 async function seedPhysiotherapistClinics() {
   console.log("🤝 Seeding physiotherapist-clinic associations...");
 
-  const physios = await prisma.physiotherapistProfile.findMany();
-  const clinics = await prisma.clinic.findMany();
+  const physios = await prisma.physiotherapistProfile.findMany({
+    orderBy: { id: 'asc' }
+  });
+  const clinics = await prisma.clinic.findMany({
+    orderBy: { id: 'asc' }
+  });
+  const cities = await prisma.city.findMany({
+    orderBy: { id: 'asc' }
+  });
+  const specializations = await prisma.specialization.findMany({
+    orderBy: { id: 'asc' }
+  });
 
-  // Associate each physiotherapist with 1-2 clinics
+  // Associate physiotherapists with clinics based on their intended city
+  // Physios are ordered: city0-spec0 (4), city0-spec1 (4), ..., city1-spec0 (4), etc.
   for (let i = 0; i < physios.length; i++) {
     const physio = physios[i];
-
-    // Primary clinic
-    await prisma.physiotherapistClinic.create({
-      data: {
-        physiotherapistId: physio.id,
-        clinicId: clinics[i % clinics.length].id,
-        isPrimary: true,
-        startDate: new Date("2023-01-01"),
-      },
-    });
-
-    // Secondary clinic (50% chance)
-    if (Math.random() > 0.5) {
+    
+    // Calculate which city this physio should be in
+    const cityIndex = Math.floor(i / (specializations.length * 4));
+    const city = cities[cityIndex];
+    
+    // Find the clinic for this city
+    const cityClinic = clinics.find(clinic => clinic.cityId === city.id);
+    
+    if (cityClinic) {
+      // Primary clinic - assign physiotherapist to their city's clinic
       await prisma.physiotherapistClinic.create({
         data: {
           physiotherapistId: physio.id,
-          clinicId: clinics[(i + 1) % clinics.length].id,
-          isPrimary: false,
-          startDate: new Date("2023-06-01"),
+          clinicId: cityClinic.id,
+          isPrimary: true,
+          startDate: new Date("2023-01-01"),
         },
       });
+
+      // 20% chance to also work at a nearby clinic
+      if (Math.random() < 0.2) {
+        // Find a nearby clinic (different city)
+        const nearbyClinic = clinics.find(c => c.id !== cityClinic.id);
+        
+        if (nearbyClinic) {
+          await prisma.physiotherapistClinic.create({
+            data: {
+              physiotherapistId: physio.id,
+              clinicId: nearbyClinic.id,
+              isPrimary: false,
+              startDate: new Date("2023-06-01"),
+            },
+          });
+        }
+      }
     }
   }
 }
