@@ -10,10 +10,14 @@ import {
   Phone,
   Mail,
   ArrowLeft,
+  CheckCircle,
+  XCircle,
+  X,
 } from "lucide-react";
 import Footer from "@/app/components/footer";
-import Header from "@/app/components/header";
 import { getPhysiotherapistsByLocationAndSpecialization, debugDatabaseContents } from "@/lib/actions/physiotherapist";
+import { createBooking, getSpecializationIdByName } from "@/lib/actions/booking";
+import { getCurrentUser } from "@/lib/auth";
 
 const PhysiotherapyBookingPage = ({ params }) => {
   // Unwrap params using React.use()
@@ -64,6 +68,23 @@ const PhysiotherapyBookingPage = ({ params }) => {
   const [physiotherapists, setPhysiotherapists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('success');
+  const [bookingLoading, setBookingLoading] = useState(null);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedTherapist, setSelectedTherapist] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // Get current user on component mount
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getCurrentUser();
+      setCurrentUser(user);
+    };
+    fetchUser();
+  }, []);
 
   // Update state when params change
   useEffect(() => {
@@ -222,9 +243,249 @@ const PhysiotherapyBookingPage = ({ params }) => {
     }
   };
 
+  // Show toast notification
+  const showToastNotification = (message, type = 'success') => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 5000);
+  };
+
+  // Handle booking
+  const handleBooking = async (therapist, timeSlot) => {
+    try {
+      setBookingLoading(therapist.id);
+      
+      // Check if user is logged in
+      if (!currentUser) {
+        showToastNotification('Please log in to book appointments', 'error');
+        return;
+      }
+      
+      // Find clinic ID from therapist's clinics (use first available)
+      const clinicId = therapist.clinics?.[0]?.id;
+      
+      if (!clinicId) {
+        showToastNotification('No clinic information available for this therapist', 'error');
+        return;
+      }
+      
+      // Convert 12-hour time format to 24-hour format (HH:mm)
+      const convertTo24Hour = (time12h) => {
+        const [time, modifier] = time12h.split(' ');
+        let [hours, minutes] = time.split(':');
+        
+        if (modifier === 'AM') {
+          if (hours === '12') {
+            hours = '00'; // 12 AM becomes 00
+          }
+        } else { // PM
+          if (hours !== '12') {
+            hours = parseInt(hours, 10) + 12; // Add 12 for PM (except 12 PM stays 12)
+          }
+        }
+        
+        return `${hours.toString().padStart(2, '0')}:${minutes}`;
+      };
+
+      // Log booking details for debugging
+      console.log('Creating booking for:', {
+        therapist: therapist.name,
+        timeSlot: `${timeSlot} (${convertTo24Hour(timeSlot)})`,
+        date: selectedDate
+      });
+      
+      // Get actual specialization ID from database
+      const treatmentTypeId = await getSpecializationIdByName(selectedService);
+      
+      if (!treatmentTypeId) {
+        showToastNotification(`Specialization "${selectedService}" not found`, 'error');
+        return;
+      }
+
+      const bookingData = {
+        patientId: currentUser.id,
+        physiotherapistId: therapist.id,
+        clinicId: clinicId,
+        appointmentDate: selectedDate,
+        appointmentTime: convertTo24Hour(timeSlot),
+        durationMinutes: 60,
+        treatmentTypeId: treatmentTypeId,
+        patientNotes: '',
+        totalAmount: parseFloat(therapist.price.replace('€', ''))
+      };
+
+      const result = await createBooking(bookingData);
+      
+      if (result.success) {
+        showToastNotification(
+          `Your booking reference is: ${result.data.bookingReference}. Please save this for your records.`, 
+          'success'
+        );
+        setShowBookingModal(false);
+        setSelectedTherapist(null);
+        setSelectedSlot(null);
+      } else {
+        showToastNotification(result.error || 'Failed to create booking', 'error');
+      }
+    } catch (error) {
+      console.error('Booking error:', error);
+      showToastNotification('An error occurred while booking', 'error');
+    } finally {
+      setBookingLoading(null);
+    }
+  };
+
+  // Open booking modal
+  const openBookingModal = (therapist) => {
+    if (!currentUser) {
+      showToastNotification('Please log in to book appointments', 'error');
+      return;
+    }
+    
+    
+    setSelectedTherapist(therapist);
+    setShowBookingModal(true);
+  };
+
+  // Toast Component
+  const Toast = () => {
+    if (!showToast) return null;
+    
+    return (
+      <div className="fixed top-6 right-6 z-50 animate-in slide-in-from-right duration-300">
+        <div className={`rounded-xl shadow-2xl p-4 max-w-sm border-2 ${
+          toastType === 'success' 
+            ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
+            : 'bg-red-50 text-red-800 border-red-200'
+        }`}>
+          <div className="flex items-start gap-3">
+            <div className={`p-1 rounded-full ${
+              toastType === 'success' ? 'bg-emerald-100' : 'bg-red-100'
+            }`}>
+              {toastType === 'success' ? (
+                <CheckCircle className="h-5 w-5 text-emerald-600" />
+              ) : (
+                <XCircle className="h-5 w-5 text-red-600" />
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-sm">
+                {toastType === 'success' ? 'Booking Confirmed!' : 'Booking Failed'}
+              </p>
+              <p className="text-sm mt-1 break-words">{toastMessage}</p>
+            </div>
+            <button
+              onClick={() => setShowToast(false)}
+              className={`p-1 rounded-full hover:bg-opacity-80 ${
+                toastType === 'success' ? 'hover:bg-emerald-200' : 'hover:bg-red-200'
+              }`}
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Booking Modal Component
+  const BookingModal = () => {
+    if (!showBookingModal || !selectedTherapist) return null;
+    
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-xl max-w-lg w-full mx-4 p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                <Calendar className="h-5 w-5 text-emerald-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900">Book Appointment</h3>
+            </div>
+            <button
+              onClick={() => setShowBookingModal(false)}
+              className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+          
+          <div className="mb-6 bg-emerald-50 rounded-lg p-4 border border-emerald-100">
+            <div className="space-y-2">
+              <p className="text-gray-700">
+                <span className="text-gray-500">Therapist:</span> <strong className="text-emerald-700">{selectedTherapist.name}</strong>
+              </p>
+              <p className="text-gray-700">
+                <span className="text-gray-500">Service:</span> <strong className="text-emerald-700">{selectedService}</strong>
+              </p>
+              <p className="text-gray-700">
+                <span className="text-gray-500">Date:</span> <strong className="text-emerald-700">{formatDate(selectedDate)}</strong>
+              </p>
+              <p className="text-gray-700">
+                <span className="text-gray-500">Cost:</span> <strong className="text-emerald-700">{selectedTherapist.price}</strong>
+              </p>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-900 mb-3 flex items-center gap-2">
+              <Clock className="h-4 w-4 text-emerald-600" />
+              Select Time Slot
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              {selectedTherapist.availableSlots.map((slot, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedSlot(slot)}
+                  className={`p-3 border-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    selectedSlot === slot
+                      ? 'border-emerald-500 bg-emerald-100 text-emerald-800 shadow-md transform scale-[1.02]'
+                      : 'border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 hover:shadow-sm'
+                  }`}
+                >
+                  {slot}
+                </button>
+              ))}
+            </div>
+            {!selectedSlot && (
+              <p className="text-sm text-gray-500 mt-2 italic">Please select a time slot to continue</p>
+            )}
+          </div>
+
+          <div className="flex gap-3 pt-4 border-t border-gray-200">
+            <button
+              onClick={() => setShowBookingModal(false)}
+              className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 font-medium transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => handleBooking(selectedTherapist, selectedSlot)}
+              disabled={!selectedSlot || bookingLoading === selectedTherapist.id}
+              className={`flex-1 px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+                !selectedSlot || bookingLoading === selectedTherapist.id
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-emerald-500 hover:bg-emerald-600 hover:shadow-lg text-white transform hover:scale-[1.02]'
+              }`}
+            >
+              {bookingLoading === selectedTherapist.id ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Booking...
+                </div>
+              ) : (
+                'Confirm Booking'
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50">
-      <Header />
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Service Information Section */}
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
@@ -389,8 +650,12 @@ const PhysiotherapyBookingPage = ({ params }) => {
                 </div>
 
                 <div className="flex gap-3">
-                  <button className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-lg font-semibold transition-colors">
-                    Book Appointment
+                  <button 
+                    onClick={() => openBookingModal(therapist)}
+                    disabled={bookingLoading === therapist.id}
+                    className="flex-1 bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-400 text-white py-3 rounded-lg font-semibold transition-colors"
+                  >
+                    {bookingLoading === therapist.id ? 'Processing...' : 'Book Appointment'}
                   </button>
                   <button className="px-4 py-3 border border-emerald-300 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors">
                     <Phone className="h-5 w-5" />
@@ -423,6 +688,8 @@ const PhysiotherapyBookingPage = ({ params }) => {
         )}
       </div>
       <Footer />
+      <Toast />
+      <BookingModal />
     </div>
   );
 };

@@ -64,6 +64,7 @@ export async function getPhysiotherapistsByLocationAndSpecialization(location, s
           include: {
             clinic: {
               select: {
+                id: true,
                 name: true,
                 addressLine1: true,
                 city: {
@@ -111,6 +112,7 @@ export async function getPhysiotherapistsByLocationAndSpecialization(location, s
         phone: physio.user.phone,
         bio: physio.bio,
         clinics: physio.clinicAssociations.map(assoc => ({
+          id: assoc.clinic.id,
           name: assoc.clinic.name,
           address: assoc.clinic.addressLine1,
           city: assoc.clinic.city.name

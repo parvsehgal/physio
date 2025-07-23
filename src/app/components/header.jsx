@@ -1,5 +1,5 @@
 "use client";
-import { Menu, X, User, LogOut } from "lucide-react";
+import { Menu, X, User, LogOut, Calendar } from "lucide-react";
 import { useState } from "react";
 import { logout } from "../../lib/auth"; // Adjust the import path as needed
 
@@ -23,11 +23,13 @@ const Header = ({ user = null }) => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3 mt-2">
-            <img
-              src="/logo.png"
-              alt="UNIPHY Logo"
-              className="h-40 w-40 translate-y--9 translate-x-12"
-            />
+            <a href="/" className="cursor-pointer">
+              <img
+                src="/logo.png"
+                alt="UNIPHY Logo"
+                className="h-40 w-40 translate-y--9 translate-x-12 hover:opacity-80 transition-opacity duration-200"
+              />
+            </a>
           </div>
 
           {/* Desktop Navigation */}
@@ -87,6 +89,13 @@ const Header = ({ user = null }) => {
                         </p>
                       )}
                     </div>
+                    <a
+                      href="/bookings"
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center space-x-2"
+                    >
+                      <Calendar className="h-4 w-4" />
+                      <span>My Bookings</span>
+                    </a>
                     <button
                       onClick={handleLogout}
                       className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200 flex items-center space-x-2"
@@ -178,6 +187,13 @@ const Header = ({ user = null }) => {
                         )}
                       </div>
                     </div>
+                    <a
+                      href="/bookings"
+                      className="w-full text-left text-gray-700 hover:text-gray-900 font-medium py-2 px-2 transition-colors duration-200 flex items-center space-x-2"
+                    >
+                      <Calendar className="h-4 w-4" />
+                      <span>My Bookings</span>
+                    </a>
                     <button
                       onClick={handleLogout}
                       className="w-full text-left text-red-600 hover:text-red-700 font-medium py-2 px-2 transition-colors duration-200 flex items-center space-x-2"
