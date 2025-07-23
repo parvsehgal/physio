@@ -58,11 +58,11 @@ const CTA = () => {
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <div className="flex items-center gap-2 text-gray-700">
               <Phone className="h-5 w-5" style={{ color: "#7ce3b1" }} />
-              <span>1-800-UNIPHY-1</span>
+              <span>1-800-ABAILE-1</span>
             </div>
             <div className="flex items-center gap-2 text-gray-700">
               <Mail className="h-5 w-5" style={{ color: "#7ce3b1" }} />
-              <span>support@uniphy.com</span>
+              <span>support@abaile.com</span>
             </div>
           </div>
         </div>

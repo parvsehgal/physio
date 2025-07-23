@@ -26,7 +26,7 @@ const Header = ({ user = null }) => {
             <a href="/" className="cursor-pointer">
               <img
                 src="/logo.png"
-                alt="UNIPHY Logo"
+                alt="Abaile Logo"
                 className="h-40 w-40 translate-y--9 translate-x-12 hover:opacity-80 transition-opacity duration-200"
               />
             </a>

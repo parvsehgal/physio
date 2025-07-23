@@ -271,12 +271,6 @@ const BookingsPage = () => {
                                 {statusDisplay.label}
                               </span>
                             </div>
-                            <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${paymentDisplay.color}`}>
-                              {paymentDisplay.icon}
-                              <span className="text-sm font-medium">
-                                {paymentDisplay.label}
-                              </span>
-                            </div>
                           </div>
                         </div>
 
@@ -325,17 +319,6 @@ const BookingsPage = () => {
                               <div>
                                 <p className="text-sm text-gray-500">Cost</p>
                                 <p className="font-medium">€{booking.totalAmount}</p>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-3">
-                              <CreditCard className="h-5 w-5 text-gray-400" />
-                              <div>
-                                <p className="text-sm text-gray-500">Payment Status</p>
-                                <div className={`inline-flex items-center gap-2 px-2 py-1 rounded-md text-sm ${paymentDisplay.color}`}>
-                                  {paymentDisplay.icon}
-                                  <span className="font-medium">{paymentDisplay.label}</span>
-                                </div>
                               </div>
                             </div>
                           </div>
@@ -438,14 +421,6 @@ const BookingsPage = () => {
                             <button className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-medium transition-colors">
                               Leave Review
                             </button>
-                          )}
-
-                          {/* Paid Status Indicator */}
-                          {booking.paymentStatus === 'paid' && (
-                            <div className="px-4 py-2 bg-green-100 text-green-700 rounded-lg font-medium flex items-center gap-2">
-                              <CheckCircle className="h-4 w-4" />
-                              <span>Payment Complete</span>
-                            </div>
                           )}
                         </div>
                       </div>

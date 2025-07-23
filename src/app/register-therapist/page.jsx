@@ -190,7 +190,7 @@ const PhysiotherapistRegistrationPage = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Join UNIPHY as a Physiotherapist
+            Join Abaile as a Physiotherapist
           </h1>
           <p className="text-gray-600">
             Create your professional profile and start connecting with patients

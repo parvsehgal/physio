@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "UNIPHY - Physiotherapy Booking Platform",
+  title: "Abaile - Physiotherapy Booking Platform",
   description: "Find and book appointments with qualified physiotherapists in Ireland",
 };
 

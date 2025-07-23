@@ -146,7 +146,7 @@ const TherapistCTA = () => {
               Ready to Transform Your Practice?
             </h3>
             <p className="text-gray-600 mb-6 text-lg">
-              Join UNIPHY today and start connecting with patients who need your expertise.
+              Join Abaile today and start connecting with patients who need your expertise.
             </p>
             <a
               href="/register-therapist"
