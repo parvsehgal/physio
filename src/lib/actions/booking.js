@@ -357,6 +357,33 @@ export async function getBookingsByPatient(patientId) {
 
 export { getSpecializationIdByName };
 
+// Helper function to get physiotherapist profile ID by user ID
+async function getPhysiotherapistProfileId(userId) {
+  try {
+    const profile = await prisma.physiotherapistProfile.findUnique({
+      where: { userId: parseInt(userId) },
+      select: { id: true }
+    });
+    return profile?.id || null;
+  } catch (error) {
+    console.error('Error finding physiotherapist profile:', error);
+    return null;
+  }
+}
+
+export async function getBookingsByTherapistUserId(userId) {
+  try {
+    const profileId = await getPhysiotherapistProfileId(userId);
+    if (!profileId) {
+      return { success: false, error: 'Physiotherapist profile not found' };
+    }
+    return await getBookingsByPhysiotherapist(profileId);
+  } catch (error) {
+    console.error('Error fetching therapist bookings by user ID:', error);
+    return { success: false, error: 'Failed to fetch bookings' };
+  }
+}
+
 export async function getBookingsByPhysiotherapist(physiotherapistId) {
   try {
     const bookings = await prisma.booking.findMany({
@@ -367,7 +394,8 @@ export async function getBookingsByPhysiotherapist(physiotherapistId) {
             firstName: true,
             lastName: true,
             email: true,
-            phone: true
+            phone: true,
+            dateOfBirth: true
           }
         },
         clinic: {
@@ -390,6 +418,14 @@ export async function getBookingsByPhysiotherapist(physiotherapistId) {
           select: {
             name: true
           }
+        },
+        payments: {
+          select: {
+            id: true,
+            amount: true,
+            status: true,
+            processedAt: true
+          }
         }
       },
       orderBy: [
@@ -398,20 +434,43 @@ export async function getBookingsByPhysiotherapist(physiotherapistId) {
       ]
     })
 
-    const formattedBookings = bookings.map(booking => ({
-      id: booking.id,
-      bookingReference: booking.bookingReference,
-      appointmentDate: booking.appointmentDate,
-      appointmentTime: booking.appointmentTime,
-      durationMinutes: booking.durationMinutes,
-      totalAmount: booking.totalAmount ? parseFloat(booking.totalAmount.toString()) : null,
-      status: booking.status.name,
-      patient: booking.patient,
-      clinic: booking.clinic,
-      treatmentType: booking.treatmentType?.name,
-      patientNotes: booking.patientNotes,
-      therapistNotes: booking.therapistNotes
-    }))
+    const formattedBookings = bookings.map(booking => {
+      // Determine payment status
+      const hasPayment = booking.payments && booking.payments.length > 0;
+      const paidPayment = booking.payments?.find(payment => payment.status === 'completed');
+      
+      let paymentStatus = 'unpaid';
+      let paymentAmount = null;
+      
+      if (hasPayment) {
+        if (paidPayment) {
+          paymentStatus = 'paid';
+          paymentAmount = parseFloat(paidPayment.amount.toString());
+        } else {
+          const latestPayment = booking.payments[booking.payments.length - 1];
+          paymentStatus = latestPayment.status;
+          paymentAmount = parseFloat(latestPayment.amount.toString());
+        }
+      }
+
+      return {
+        id: booking.id,
+        bookingReference: booking.bookingReference,
+        appointmentDate: booking.appointmentDate,
+        appointmentTime: booking.appointmentTime,
+        durationMinutes: booking.durationMinutes,
+        totalAmount: booking.totalAmount ? parseFloat(booking.totalAmount.toString()) : null,
+        status: booking.status.name,
+        patient: booking.patient,
+        clinic: booking.clinic,
+        treatmentType: booking.treatmentType?.name,
+        patientNotes: booking.patientNotes,
+        therapistNotes: booking.therapistNotes,
+        paymentStatus: paymentStatus,
+        paymentAmount: paymentAmount,
+        payments: booking.payments || []
+      };
+    })
 
     return { success: true, data: formattedBookings }
   } catch (error) {

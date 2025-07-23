@@ -67,6 +67,25 @@ async function getDefaultPatientRoleId() {
   return role.id;
 }
 
+// Get physiotherapist role ID
+async function getPhysiotherapistRoleId() {
+  let role = await prisma.userRole.findUnique({
+    where: { name: "physiotherapist" },
+  });
+
+  if (!role) {
+    // Create physiotherapist role if it doesn't exist
+    role = await prisma.userRole.create({
+      data: {
+        name: "physiotherapist",
+        description: "Physiotherapist role",
+      },
+    });
+  }
+
+  return role.id;
+}
+
 // SIGNUP ACTION
 export async function signup(formData) {
   try {
@@ -291,4 +310,150 @@ export async function checkUserRole(allowedRoles) {
   }
 
   return user;
+}
+
+// PHYSIOTHERAPIST REGISTRATION ACTION
+export async function registerPhysiotherapist(formData) {
+  try {
+    // Extract and validate form data
+    const rawData = {
+      // Basic user data
+      email: formData.get("email"),
+      password: formData.get("password"),
+      firstName: formData.get("firstName"),
+      lastName: formData.get("lastName"),
+      phone: formData.get("phone") || undefined,
+      dateOfBirth: formData.get("dateOfBirth") || undefined,
+      gender: formData.get("gender") || undefined,
+      
+      // Physiotherapist-specific data
+      coruRegistration: formData.get("coruRegistration"),
+      qualification: formData.get("qualification"),
+      yearsExperience: formData.get("yearsExperience") ? parseInt(formData.get("yearsExperience")) : undefined,
+      bio: formData.get("bio"),
+      hourlyRate: formData.get("hourlyRate") ? parseFloat(formData.get("hourlyRate")) : undefined,
+      specializations: formData.get("specializations") ? JSON.parse(formData.get("specializations")) : [],
+      selectedClinic: formData.get("selectedClinic") ? parseInt(formData.get("selectedClinic")) : undefined,
+    };
+
+    // Validate required fields
+    if (!rawData.email || !rawData.password || !rawData.firstName || !rawData.lastName) {
+      return {
+        success: false,
+        message: "Please fill in all required fields",
+      };
+    }
+
+    if (!rawData.coruRegistration) {
+      return {
+        success: false,
+        message: "CORU registration number is required for physiotherapists",
+      };
+    }
+
+    if (!rawData.selectedClinic) {
+      return {
+        success: false,
+        message: "Please select a clinic to associate with your profile",
+      };
+    }
+
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email: rawData.email },
+    });
+
+    if (existingUser) {
+      return {
+        success: false,
+        message: "User already exists with this email",
+      };
+    }
+
+    // Hash password
+    const passwordHash = await bcrypt.hash(rawData.password, 12);
+
+    // Get physiotherapist role
+    const roleId = await getPhysiotherapistRoleId();
+
+    // Parse date of birth if provided
+    const dateOfBirth = rawData.dateOfBirth
+      ? new Date(rawData.dateOfBirth)
+      : undefined;
+
+    // Create user and physiotherapist profile in a transaction
+    const result = await prisma.$transaction(async (tx) => {
+      // Create user
+      const user = await tx.user.create({
+        data: {
+          email: rawData.email,
+          passwordHash,
+          firstName: rawData.firstName,
+          lastName: rawData.lastName,
+          phone: rawData.phone || null,
+          dateOfBirth,
+          gender: rawData.gender,
+          roleId,
+        },
+        include: {
+          role: true,
+        },
+      });
+
+      // Create physiotherapist profile
+      const physiotherapistProfile = await tx.physiotherapistProfile.create({
+        data: {
+          userId: user.id,
+          coruRegistration: rawData.coruRegistration,
+          qualification: rawData.qualification,
+          yearsExperience: rawData.yearsExperience,
+          bio: rawData.bio,
+          hourlyRate: rawData.hourlyRate,
+          isVerified: false, // Requires admin verification
+          isAvailable: false, // Not available until verified
+        },
+      });
+
+      // Add specializations if provided
+      if (rawData.specializations && rawData.specializations.length > 0) {
+        const specializationRecords = rawData.specializations.map((specializationId) => ({
+          physiotherapistId: physiotherapistProfile.id,
+          specializationId: parseInt(specializationId),
+        }));
+
+        await tx.physiotherapistSpecialization.createMany({
+          data: specializationRecords,
+        });
+      }
+
+      // Create clinic association
+      if (rawData.selectedClinic) {
+        await tx.physiotherapistClinic.create({
+          data: {
+            physiotherapistId: physiotherapistProfile.id,
+            clinicId: rawData.selectedClinic,
+            isPrimary: true, // First clinic is always primary
+            startDate: new Date(),
+          },
+        });
+      }
+
+      return { user, physiotherapistProfile };
+    });
+
+    // Create and set auth token
+    const token = createToken(result.user.id, result.user.email, result.user.roleId);
+    await setAuthCookie(token);
+
+    return {
+      success: true,
+      message: "Physiotherapist registration successful. Your profile is pending verification.",
+    };
+  } catch (error) {
+    console.error("Physiotherapist registration error:", error);
+    return {
+      success: false,
+      message: "Failed to register physiotherapist. Please try again.",
+    };
+  }
 }

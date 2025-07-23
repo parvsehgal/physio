@@ -40,6 +40,18 @@ const BookingsPage = () => {
           return;
         }
         
+        // Redirect physiotherapists to their own panel
+        if (currentUser.role?.name === 'physiotherapist') {
+          window.location.href = '/therapist-bookings';
+          return;
+        }
+        
+        // Only allow patients to view this page
+        if (currentUser.role?.name !== 'patient') {
+          setError('Access denied. This page is for patients only.');
+          return;
+        }
+        
         const result = await getBookingsByPatient(currentUser.id);
         
         if (result.success) {

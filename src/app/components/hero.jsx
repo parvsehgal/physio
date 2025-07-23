@@ -100,6 +100,22 @@ const Hero = () => {
               </button>
             </div>
 
+            {/* Therapist CTA */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-emerald-100">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="text-center sm:text-left">
+                  <p className="text-gray-900 font-semibold">Are you a physiotherapist?</p>
+                  <p className="text-gray-600 text-sm">Join our network and connect with patients</p>
+                </div>
+                <a
+                  href="/register-therapist"
+                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 whitespace-nowrap"
+                >
+                  Join as Therapist
+                </a>
+              </div>
+            </div>
+
             <div className="flex flex-wrap gap-8 pt-4">
               <div className="flex items-center gap-2">
                 <Calendar className="h-5 w-5 text-emerald-500" />

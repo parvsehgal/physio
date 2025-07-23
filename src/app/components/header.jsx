@@ -90,11 +90,11 @@ const Header = ({ user = null }) => {
                       )}
                     </div>
                     <a
-                      href="/bookings"
+                      href={user.role?.name === 'physiotherapist' ? '/therapist-bookings' : '/bookings'}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center space-x-2"
                     >
                       <Calendar className="h-4 w-4" />
-                      <span>My Bookings</span>
+                      <span>{user.role?.name === 'physiotherapist' ? 'My Appointments' : 'My Bookings'}</span>
                     </a>
                     <button
                       onClick={handleLogout}
@@ -188,11 +188,11 @@ const Header = ({ user = null }) => {
                       </div>
                     </div>
                     <a
-                      href="/bookings"
+                      href={user.role?.name === 'physiotherapist' ? '/therapist-bookings' : '/bookings'}
                       className="w-full text-left text-gray-700 hover:text-gray-900 font-medium py-2 px-2 transition-colors duration-200 flex items-center space-x-2"
                     >
                       <Calendar className="h-4 w-4" />
-                      <span>My Bookings</span>
+                      <span>{user.role?.name === 'physiotherapist' ? 'My Appointments' : 'My Bookings'}</span>
                     </a>
                     <button
                       onClick={handleLogout}

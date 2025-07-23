@@ -173,6 +173,43 @@ export async function getAllCities() {
   }
 }
 
+export async function getAllClinics() {
+  try {
+    const clinics = await prisma.clinic.findMany({
+      where: {
+        isActive: true
+      },
+      select: {
+        id: true,
+        name: true,
+        addressLine1: true,
+        addressLine2: true,
+        eircode: true,
+        phone: true,
+        email: true,
+        city: {
+          select: {
+            id: true,
+            name: true,
+            county: true
+          }
+        }
+      },
+      orderBy: [
+        { city: { name: 'asc' } },
+        { name: 'asc' }
+      ]
+    })
+
+    return { success: true, data: clinics }
+  } catch (error) {
+    console.error('Error fetching clinics:', error)
+    return { success: false, error: 'Failed to fetch clinics' }
+  } finally {
+    await prisma.$disconnect()
+  }
+}
+
 // Debug function to check what's actually in the database
 export async function debugDatabaseContents() {
   try {

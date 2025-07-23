@@ -7,6 +7,7 @@ import CTA from "./components/cta";
 import Footer from "./components/footer";
 import BlogsSection from "./components/blogs";
 import IrelandPhysiotherapistMap from "./components/map";
+import TherapistCTA from "./components/therapist-cta";
 
 export default function Home() {
   return (
@@ -19,6 +20,7 @@ export default function Home() {
         <IrelandPhysiotherapistMap />
         <BlogsSection />
         <Testimonials />
+        <TherapistCTA />
         <CTA />
         <Footer />
       </main>
