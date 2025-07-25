@@ -4,11 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "db:seed": "node prisma/seed.js",
-    "build": "prisma generate && next build",
     "postinstall": "prisma generate"
   },
   "prisma": {
@@ -23,6 +22,7 @@
     "next": "15.3.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "stripe": "^18.3.0",
     "zod": "^4.0.5"
   },
   "devDependencies": {

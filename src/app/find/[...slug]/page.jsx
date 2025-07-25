@@ -18,6 +18,7 @@ import Footer from "@/app/components/footer";
 import { getPhysiotherapistsByLocationAndSpecialization, debugDatabaseContents } from "@/lib/actions/physiotherapist";
 import { createBooking, getSpecializationIdByName } from "@/lib/actions/booking";
 import { getCurrentUser } from "@/lib/auth";
+import PaymentForm from "@/app/components/payment-form";
 
 const PhysiotherapyBookingPage = ({ params }) => {
   // Unwrap params using React.use()
@@ -76,6 +77,8 @@ const PhysiotherapyBookingPage = ({ params }) => {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedTherapist, setSelectedTherapist] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [showPayment, setShowPayment] = useState(false);
+  const [bookingData, setBookingData] = useState(null);
 
   // Get current user on component mount
   useEffect(() => {
@@ -251,7 +254,7 @@ const PhysiotherapyBookingPage = ({ params }) => {
     setTimeout(() => setShowToast(false), 5000);
   };
 
-  // Handle booking
+  // Handle booking - now just prepares booking data and shows payment
   const handleBooking = async (therapist, timeSlot) => {
     try {
       setBookingLoading(therapist.id);
@@ -288,13 +291,6 @@ const PhysiotherapyBookingPage = ({ params }) => {
         return `${hours.toString().padStart(2, '0')}:${minutes}`;
       };
 
-      // Log booking details for debugging
-      console.log('Creating booking for:', {
-        therapist: therapist.name,
-        timeSlot: `${timeSlot} (${convertTo24Hour(timeSlot)})`,
-        date: selectedDate
-      });
-      
       // Get actual specialization ID from database
       const treatmentTypeId = await getSpecializationIdByName(selectedService);
       
@@ -303,7 +299,7 @@ const PhysiotherapyBookingPage = ({ params }) => {
         return;
       }
 
-      const bookingData = {
+      const preparedBookingData = {
         patientId: currentUser.id,
         physiotherapistId: therapist.id,
         clinicId: clinicId,
@@ -315,25 +311,69 @@ const PhysiotherapyBookingPage = ({ params }) => {
         totalAmount: parseFloat(therapist.price.replace('€', ''))
       };
 
-      const result = await createBooking(bookingData);
+      // Create the booking first
+      const bookingResult = await createBooking(preparedBookingData);
       
-      if (result.success) {
-        showToastNotification(
-          `Your booking reference is: ${result.data.bookingReference}. Please save this for your records.`, 
-          'success'
-        );
-        setShowBookingModal(false);
-        setSelectedTherapist(null);
-        setSelectedSlot(null);
-      } else {
-        showToastNotification(result.error || 'Failed to create booking', 'error');
+      if (!bookingResult.success) {
+        showToastNotification(bookingResult.error || 'Failed to create booking', 'error');
+        return;
       }
+
+      // Store booking data with the created booking ID and show payment form
+      setBookingData({
+        ...preparedBookingData,
+        bookingId: bookingResult.data.id
+      });
+      setShowPayment(true);
+      
     } catch (error) {
-      console.error('Booking error:', error);
-      showToastNotification('An error occurred while booking', 'error');
+      console.error('Booking preparation error:', error);
+      showToastNotification('An error occurred while preparing booking', 'error');
     } finally {
       setBookingLoading(null);
     }
+  };
+
+  // Handle actual booking creation after payment
+  const handleBookingCreation = async (bookingData) => {
+    try {
+      const result = await createBooking(bookingData);
+      
+      if (result.success) {
+        return result;
+      } else {
+        throw new Error(result.error || 'Failed to create booking');
+      }
+    } catch (error) {
+      console.error('Booking creation error:', error);
+      throw error;
+    }
+  };
+
+  // Handle successful payment
+  const handlePaymentSuccess = async (paymentResult) => {
+    try {
+      // Booking is already created, just show success message
+      showToastNotification(
+        `Payment processed successfully! Your booking has been confirmed.`, 
+        'success'
+      );
+        
+      // Reset states
+      setShowBookingModal(false);
+      setShowPayment(false);
+      setSelectedTherapist(null);
+      setSelectedSlot(null);
+      setBookingData(null);
+    } catch (error) {
+      showToastNotification('Payment processed but there was an error. Please contact support.', 'error');
+    }
+  };
+
+  // Handle payment error
+  const handlePaymentError = (error) => {
+    showToastNotification(`Payment failed: ${error}`, 'error');
+    // Keep the booking modal open so user can try again
   };
 
   // Open booking modal
@@ -395,89 +435,151 @@ const PhysiotherapyBookingPage = ({ params }) => {
     
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-xl max-w-lg w-full mx-4 p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-          <div className="flex justify-between items-center mb-6">
+        <div className="bg-white rounded-xl max-w-4xl w-full mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="flex justify-between items-center p-6 border-b border-gray-200">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
                 <Calendar className="h-5 w-5 text-emerald-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900">Book Appointment</h3>
+              <h3 className="text-xl font-semibold text-gray-900">
+                {showPayment ? 'Complete Payment' : 'Book Appointment'}
+              </h3>
             </div>
             <button
-              onClick={() => setShowBookingModal(false)}
+              onClick={() => {
+                setShowBookingModal(false);
+                setShowPayment(false);
+                setBookingData(null);
+              }}
               className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
             >
               <X className="h-5 w-5" />
             </button>
           </div>
           
-          <div className="mb-6 bg-emerald-50 rounded-lg p-4 border border-emerald-100">
-            <div className="space-y-2">
-              <p className="text-gray-700">
-                <span className="text-gray-500">Therapist:</span> <strong className="text-emerald-700">{selectedTherapist.name}</strong>
-              </p>
-              <p className="text-gray-700">
-                <span className="text-gray-500">Service:</span> <strong className="text-emerald-700">{selectedService}</strong>
-              </p>
-              <p className="text-gray-700">
-                <span className="text-gray-500">Date:</span> <strong className="text-emerald-700">{formatDate(selectedDate)}</strong>
-              </p>
-              <p className="text-gray-700">
-                <span className="text-gray-500">Cost:</span> <strong className="text-emerald-700">{selectedTherapist.price}</strong>
-              </p>
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-900 mb-3 flex items-center gap-2">
-              <Clock className="h-4 w-4 text-emerald-600" />
-              Select Time Slot
-            </label>
-            <div className="grid grid-cols-2 gap-3">
-              {selectedTherapist.availableSlots.map((slot, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedSlot(slot)}
-                  className={`p-3 border-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    selectedSlot === slot
-                      ? 'border-emerald-500 bg-emerald-100 text-emerald-800 shadow-md transform scale-[1.02]'
-                      : 'border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 hover:shadow-sm'
-                  }`}
-                >
-                  {slot}
-                </button>
-              ))}
-            </div>
-            {!selectedSlot && (
-              <p className="text-sm text-gray-500 mt-2 italic">Please select a time slot to continue</p>
-            )}
-          </div>
-
-          <div className="flex gap-3 pt-4 border-t border-gray-200">
-            <button
-              onClick={() => setShowBookingModal(false)}
-              className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 font-medium transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={() => handleBooking(selectedTherapist, selectedSlot)}
-              disabled={!selectedSlot || bookingLoading === selectedTherapist.id}
-              className={`flex-1 px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
-                !selectedSlot || bookingLoading === selectedTherapist.id
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-emerald-500 hover:bg-emerald-600 hover:shadow-lg text-white transform hover:scale-[1.02]'
-              }`}
-            >
-              {bookingLoading === selectedTherapist.id ? (
-                <div className="flex items-center justify-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Booking...
+          <div className="p-6">
+            {!showPayment ? (
+              // Booking details and time selection
+              <>
+                <div className="mb-6 bg-emerald-50 rounded-lg p-4 border border-emerald-100">
+                  <div className="space-y-2">
+                    <p className="text-gray-700">
+                      <span className="text-gray-500">Therapist:</span> <strong className="text-emerald-700">{selectedTherapist.name}</strong>
+                    </p>
+                    <p className="text-gray-700">
+                      <span className="text-gray-500">Service:</span> <strong className="text-emerald-700">{selectedService}</strong>
+                    </p>
+                    <p className="text-gray-700">
+                      <span className="text-gray-500">Date:</span> <strong className="text-emerald-700">{formatDate(selectedDate)}</strong>
+                    </p>
+                    <p className="text-gray-700">
+                      <span className="text-gray-500">Cost:</span> <strong className="text-emerald-700">{selectedTherapist.price}</strong>
+                    </p>
+                  </div>
                 </div>
-              ) : (
-                'Confirm Booking'
-              )}
-            </button>
+
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-900 mb-3 flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-emerald-600" />
+                    Select Time Slot
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {selectedTherapist.availableSlots.map((slot, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedSlot(slot)}
+                        className={`p-3 border-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                          selectedSlot === slot
+                            ? 'border-emerald-500 bg-emerald-100 text-emerald-800 shadow-md transform scale-[1.02]'
+                            : 'border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 hover:shadow-sm'
+                        }`}
+                      >
+                        {slot}
+                      </button>
+                    ))}
+                  </div>
+                  {!selectedSlot && (
+                    <p className="text-sm text-gray-500 mt-2 italic">Please select a time slot to continue</p>
+                  )}
+                </div>
+
+                <div className="flex gap-3 pt-4 border-t border-gray-200">
+                  <button
+                    onClick={() => setShowBookingModal(false)}
+                    className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => handleBooking(selectedTherapist, selectedSlot)}
+                    disabled={!selectedSlot || bookingLoading === selectedTherapist.id}
+                    className={`flex-1 px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+                      !selectedSlot || bookingLoading === selectedTherapist.id
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-emerald-500 hover:bg-emerald-600 hover:shadow-lg text-white transform hover:scale-[1.02]'
+                    }`}
+                  >
+                    {bookingLoading === selectedTherapist.id ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        Preparing...
+                      </div>
+                    ) : (
+                      'Proceed to Payment'
+                    )}
+                  </button>
+                </div>
+              </>
+            ) : (
+              // Payment form
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Booking Summary</h4>
+                  <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Therapist:</span>
+                      <span className="font-medium">{selectedTherapist.name}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Service:</span>
+                      <span className="font-medium">{selectedService}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Date:</span>
+                      <span className="font-medium">{formatDate(selectedDate)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Time:</span>
+                      <span className="font-medium">{selectedSlot}</span>
+                    </div>
+                    <div className="flex justify-between border-t pt-3">
+                      <span className="text-gray-600">Total:</span>
+                      <span className="font-bold text-lg">{selectedTherapist.price}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4">
+                    <button
+                      onClick={() => setShowPayment(false)}
+                      className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      ← Back to Booking Details
+                    </button>
+                  </div>
+                </div>
+                
+                <div>
+                  {bookingData && (
+                    <PaymentForm
+                      bookingId={bookingData.bookingId}
+                      amount={bookingData.totalAmount}
+                      onPaymentSuccess={handlePaymentSuccess}
+                      onPaymentError={handlePaymentError}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
