@@ -372,52 +372,149 @@ export async function getAllPhysiotherapistProfilesForAdmin() {
   }
 }
 
-export async function debugDatabaseContents() {
+export async function deletePhysiotherapistProfile(profileId) {
   try {
-    const cities = await prisma.city.findMany({ select: { name: true } })
-    const specializations = await prisma.specialization.findMany({ select: { name: true } })
-    const physioCount = await prisma.physiotherapistProfile.count()
-    const specializationAssignments = await prisma.physiotherapistSpecialization.findMany({
+    // First check if profile exists
+    const profile = await prisma.physiotherapistProfile.findUnique({
+      where: { id: profileId },
       include: {
-        specialization: { select: { name: true } },
-        physiotherapist: {
-          include: {
-            clinicAssociations: {
-              include: {
-                clinic: {
-                  include: {
-                    city: { select: { name: true } }
-                  }
-                }
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true
+          }
+        },
+        bookings: {
+          where: {
+            status: {
+              name: {
+                in: ['pending', 'confirmed']
               }
             }
           }
         }
       }
+    });
+
+    if (!profile) {
+      return { success: false, error: 'Physiotherapist profile not found' };
+    }
+
+    // Check for active bookings
+    if (profile.bookings.length > 0) {
+      return { 
+        success: false, 
+        error: `Cannot delete profile: ${profile.bookings.length} active booking(s) exist. Cancel or complete all bookings first.`
+      };
+    }
+
+    // Delete in transaction to ensure data consistency
+    const result = await prisma.$transaction(async (tx) => {
+      // Delete related records first
+      await tx.physiotherapistSpecialization.deleteMany({
+        where: { physiotherapistId: profileId }
+      });
+
+      await tx.physiotherapistClinic.deleteMany({
+        where: { physiotherapistId: profileId }
+      });
+
+      await tx.availabilityTemplate.deleteMany({
+        where: { physiotherapistId: profileId }
+      });
+
+      await tx.specificAvailability.deleteMany({
+        where: { physiotherapistId: profileId }
+      });
+
+      // Delete reviews (keep them but anonymize?)
+      await tx.review.deleteMany({
+        where: { physiotherapistId: profileId }
+      });
+
+      // Delete completed/cancelled bookings
+      await tx.booking.deleteMany({
+        where: { 
+          physiotherapistId: profileId,
+          status: {
+            name: {
+              in: ['completed', 'cancelled']
+            }
+          }
+        }
+      });
+
+      // Finally delete the profile
+      const deletedProfile = await tx.physiotherapistProfile.delete({
+        where: { id: profileId }
+      });
+
+      // Optionally delete the user account as well
+      // await tx.user.delete({ where: { id: profile.userId } });
+
+      return deletedProfile;
+    });
+
+    return { 
+      success: true, 
+      message: `Successfully deleted profile for ${profile.user.firstName} ${profile.user.lastName}`,
+      data: {
+        id: result.id,
+        name: `${profile.user.firstName} ${profile.user.lastName}`,
+        email: profile.user.email
+      }
+    };
+
+  } catch (error) {
+    console.error('Error deleting physiotherapist profile:', error);
+    return { success: false, error: 'Failed to delete physiotherapist profile' };
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function debugDatabaseContents() {
+  try {
+    const physioCount = await prisma.physiotherapistProfile.count()
+    const allPhysios = await prisma.physiotherapistProfile.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true
+          }
+        }
+      }
     })
 
-    console.log('=== DATABASE DEBUG INFO ===')
-    console.log('Cities:', cities.map(c => c.name))
-    console.log('Specializations:', specializations.map(s => s.name))
-    console.log('Total physiotherapists:', physioCount)
-    console.log('Sample specialization assignments:', specializationAssignments.slice(0, 5).map(sa => ({
-      specialization: sa.specialization.name,
-      cities: sa.physiotherapist.clinicAssociations.map(ca => ca.clinic.city.name)
+    console.log('=== PHYSIOTHERAPIST DEBUG INFO ===')
+    console.log('Total physiotherapists in DB:', physioCount)
+    console.log('All physiotherapist profiles:', allPhysios.map(p => ({
+      id: p.id,
+      userId: p.userId,
+      name: `${p.user.firstName} ${p.user.lastName}`,
+      email: p.user.email,
+      isVerified: p.isVerified,
+      isAvailable: p.isAvailable
     })))
 
-    // Convert to plain objects to avoid serialization issues
     return { 
-      cities: cities.map(c => ({ name: c.name })), 
-      specializations: specializations.map(s => ({ name: s.name })), 
       physioCount,
-      sampleAssignments: specializationAssignments.slice(0, 5).map(sa => ({
-        specialization: sa.specialization.name,
-        cities: sa.physiotherapist.clinicAssociations.map(ca => ca.clinic.city.name)
+      profiles: allPhysios.map(p => ({
+        id: p.id,
+        userId: p.userId,
+        name: `${p.user.firstName} ${p.user.lastName}`,
+        email: p.user.email,
+        isVerified: p.isVerified,
+        isAvailable: p.isAvailable
       }))
     }
   } catch (error) {
     console.error('Debug error:', error)
-    return null
+    return { error: error.message }
   } finally {
     await prisma.$disconnect()
   }

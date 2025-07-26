@@ -16,7 +16,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import Footer from "../components/footer";
-import { getBookingsByPatient } from "@/lib/actions/booking";
+import { getBookingsByPatient, cancelBooking } from "@/lib/actions/booking";
 import { getCurrentUser } from "@/lib/auth";
 
 const BookingsPage = () => {
@@ -24,6 +24,7 @@ const BookingsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
+  const [cancellingBookingId, setCancellingBookingId] = useState(null);
 
   useEffect(() => {
     const fetchUserAndBookings = async () => {
@@ -69,6 +70,42 @@ const BookingsPage = () => {
 
     fetchUserAndBookings();
   }, []);
+
+  // Handle booking cancellation
+  const handleCancelBooking = async (bookingId) => {
+    if (!user) return;
+    
+    const confirmCancel = window.confirm(
+      'Are you sure you want to cancel this booking? This action cannot be undone.'
+    );
+    
+    if (!confirmCancel) return;
+
+    setCancellingBookingId(bookingId);
+    
+    try {
+      const result = await cancelBooking(bookingId, user.id);
+      
+      if (result.success) {
+        // Update the booking status in the local state
+        setBookings(prevBookings => 
+          prevBookings.map(booking => 
+            booking.id === bookingId 
+              ? { ...booking, status: 'cancelled' }
+              : booking
+          )
+        );
+        alert('Booking cancelled successfully');
+      } else {
+        alert(result.error || 'Failed to cancel booking');
+      }
+    } catch (error) {
+      console.error('Cancel booking error:', error);
+      alert('An error occurred while cancelling the booking');
+    } finally {
+      setCancellingBookingId(null);
+    }
+  };
 
   // Format date for display
   const formatDate = (dateString) => {
@@ -405,8 +442,12 @@ const BookingsPage = () => {
 
                           {/* Cancel Button for Pending Status */}
                           {booking.status === 'pending' && booking.paymentStatus !== 'paid' && (
-                            <button className="px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg font-medium transition-colors">
-                              Cancel Booking
+                            <button 
+                              onClick={() => handleCancelBooking(booking.id)}
+                              disabled={cancellingBookingId === booking.id}
+                              className="px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {cancellingBookingId === booking.id ? 'Cancelling...' : 'Cancel Booking'}
                             </button>
                           )}
                           

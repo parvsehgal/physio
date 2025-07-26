@@ -70,7 +70,12 @@ const LoginPage = () => {
       const result = await login(formDataObj);
 
       if (result.success) {
-        window.location.href = "/";
+        // Redirect based on user role
+        if (result.userRole === "Admin") {
+          window.location.href = "/admin";
+        } else {
+          window.location.href = "/";
+        }
       } else {
         setMessage(result.message);
         if (result.errors) {

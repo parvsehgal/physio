@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { updatePhysiotherapistVerification, updatePhysiotherapistAvailability } from '../../../lib/actions/physiotherapist';
+import { updatePhysiotherapistVerification, updatePhysiotherapistAvailability, deletePhysiotherapistProfile } from '../../../lib/actions/physiotherapist';
 
 export default function TherapistDetailModal({ therapist, isOpen, onClose }) {
   const [isPending, startTransition] = useTransition();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleVerificationToggle = async (currentStatus) => {
     startTransition(async () => {
@@ -34,6 +35,23 @@ export default function TherapistDetailModal({ therapist, isOpen, onClose }) {
         alert('Error updating availability status');
       }
     });
+  };
+
+  const handleDeleteProfile = async () => {
+    startTransition(async () => {
+      try {
+        const result = await deletePhysiotherapistProfile(therapist.id);
+        if (result.success) {
+          alert(`Profile deleted successfully: ${result.message}`);
+          window.location.reload();
+        } else {
+          alert(`Failed to delete profile: ${result.error}`);
+        }
+      } catch (error) {
+        alert('Error deleting profile');
+      }
+    });
+    setShowDeleteConfirm(false);
   };
 
   if (!isOpen || !therapist) return null;
@@ -105,6 +123,13 @@ export default function TherapistDetailModal({ therapist, isOpen, onClose }) {
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {isPending ? 'Updating...' : therapist.isAvailable ? 'Make Unavailable' : 'Make Available'}
+                </button>
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  disabled={isPending}
+                  className="w-full px-4 py-2 rounded-lg font-medium transition-colors bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isPending ? 'Processing...' : 'Delete Profile'}
                 </button>
               </div>
             </div>
@@ -227,6 +252,37 @@ export default function TherapistDetailModal({ therapist, isOpen, onClose }) {
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60] p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-red-600 mb-4">⚠️ Delete Therapist Profile</h3>
+            <p className="text-gray-700 mb-4">
+              Are you sure you want to permanently delete <strong>{therapist.name}</strong>'s profile?
+            </p>
+            <p className="text-sm text-gray-600 mb-6">
+              This action cannot be undone. The profile and all associated data will be permanently removed.
+            </p>
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={isPending}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteProfile}
+                disabled={isPending}
+                className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isPending ? 'Deleting...' : 'Delete Profile'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

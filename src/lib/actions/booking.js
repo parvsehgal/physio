@@ -480,3 +480,77 @@ export async function getBookingsByPhysiotherapist(physiotherapistId) {
     await prisma.$disconnect()
   }
 }
+
+export async function cancelBooking(bookingId, userId) {
+  try {
+    // First, verify the booking belongs to the user and is cancellable
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        patient: true,
+        status: true,
+        payments: true
+      }
+    });
+
+    if (!booking) {
+      return { success: false, error: 'Booking not found' };
+    }
+
+    // Check if the booking belongs to the user
+    if (booking.patient.id !== userId) {
+      return { success: false, error: 'Unauthorized: This booking does not belong to you' };
+    }
+
+    // Check if booking is already cancelled
+    if (booking.status.name === 'cancelled') {
+      return { success: false, error: 'Booking is already cancelled' };
+    }
+
+    // Check if booking can be cancelled (not completed or paid)
+    const hasSuccessfulPayment = booking.payments?.some(payment => payment.status === 'completed');
+    if (booking.status.name === 'completed') {
+      return { success: false, error: 'Cannot cancel a completed booking' };
+    }
+
+    if (hasSuccessfulPayment) {
+      return { success: false, error: 'Cannot cancel a paid booking. Please contact support for refunds.' };
+    }
+
+    // Get the cancelled status ID
+    const cancelledStatus = await prisma.bookingStatus.findUnique({
+      where: { name: 'cancelled' }
+    });
+
+    if (!cancelledStatus) {
+      return { success: false, error: 'System error: Cannot find cancelled status' };
+    }
+
+    // Update the booking status to cancelled
+    const updatedBooking = await prisma.booking.update({
+      where: { id: bookingId },
+      data: { 
+        statusId: cancelledStatus.id,
+        updatedAt: new Date()
+      },
+      include: {
+        status: true
+      }
+    });
+
+    return { 
+      success: true, 
+      message: 'Booking cancelled successfully',
+      data: {
+        id: updatedBooking.id,
+        status: updatedBooking.status.name
+      }
+    };
+
+  } catch (error) {
+    console.error('Error cancelling booking:', error);
+    return { success: false, error: 'Failed to cancel booking' };
+  } finally {
+    await prisma.$disconnect();
+  }
+}

@@ -222,14 +222,10 @@ export async function login(formData) {
     const token = createToken(user.id, user.email, user.roleId);
     await setAuthCookie(token);
 
-    // Redirect based on user role
-    if (user.role.name === "Admin") {
-      redirect("/admin");
-    }
-
     return {
       success: true,
       message: "Login successful",
+      userRole: user.role.name,
     };
   } catch (error) {
     if (error instanceof z.ZodError) {
