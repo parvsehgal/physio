@@ -210,7 +210,121 @@ export async function getAllClinics() {
   }
 }
 
+/**
+ * Admin action: verify or unverify a physiotherapist profile
+ * @param {number} profileId - The physiotherapistProfile id
+ * @param {boolean} isVerified - true to verify, false to unverify
+ */
+export async function updatePhysiotherapistVerification(profileId, isVerified) {
+  try {
+    const updated = await prisma.physiotherapistProfile.update({
+      where: { id: profileId },
+      data: { isVerified },
+    });
+    return { success: true, data: updated };
+  } catch (error) {
+    console.error('Error updating physiotherapist verification:', error);
+    return { success: false, error: 'Failed to update verification status' };
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 // Debug function to check what's actually in the database
+export async function getAllPhysiotherapistProfilesForAdmin() {
+  try {
+    const profiles = await prisma.physiotherapistProfile.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            createdAt: true
+          }
+        },
+        specializations: {
+          include: {
+            specialization: {
+              select: {
+                name: true
+              }
+            }
+          }
+        },
+        clinicAssociations: {
+          include: {
+            clinic: {
+              select: {
+                id: true,
+                name: true,
+                addressLine1: true,
+                city: {
+                  select: {
+                    name: true,
+                    county: true
+                  }
+                }
+              }
+            }
+          }
+        },
+        reviews: {
+          select: {
+            rating: true
+          }
+        }
+      },
+      orderBy: [
+        { isVerified: 'asc' },
+        { user: { createdAt: 'desc' } }
+      ]
+    })
+
+    const transformedProfiles = profiles.map(profile => {
+      const avgRating = profile.reviews.length > 0 
+        ? profile.reviews.reduce((sum, review) => sum + review.rating, 0) / profile.reviews.length
+        : 0
+
+      return {
+        id: profile.id,
+        userId: profile.user.id,
+        name: `${profile.user.firstName} ${profile.user.lastName}`,
+        email: profile.user.email,
+        phone: profile.user.phone,
+        coruRegistration: profile.coruRegistration,
+        qualification: profile.qualification,
+        yearsExperience: profile.yearsExperience,
+        hourlyRate: profile.hourlyRate,
+        bio: profile.bio,
+        isVerified: profile.isVerified,
+        isAvailable: profile.isAvailable,
+        profileImageUrl: profile.profileImageUrl,
+        avgRating: Math.round(avgRating * 10) / 10,
+        reviewCount: profile.reviews.length,
+        registeredAt: profile.user.createdAt,
+        specializations: profile.specializations.map(s => s.specialization.name),
+        clinics: profile.clinicAssociations.map(assoc => ({
+          id: assoc.clinic.id,
+          name: assoc.clinic.name,
+          address: assoc.clinic.addressLine1,
+          city: assoc.clinic.city.name,
+          county: assoc.clinic.city.county
+        }))
+      }
+    })
+
+    return { success: true, data: transformedProfiles }
+  } catch (error) {
+    console.error('Error fetching physiotherapist profiles for admin:', error)
+    return { success: false, error: 'Failed to fetch physiotherapist profiles' }
+  } finally {
+    await prisma.$disconnect()
+  }
+}
+
 export async function debugDatabaseContents() {
   try {
     const cities = await prisma.city.findMany({ select: { name: true } })

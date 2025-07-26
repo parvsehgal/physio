@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 import { z } from "zod";
 
 const prisma = new PrismaClient();
+console.log('PRISMA DEBUG: DATABASE_URL =', process.env.DATABASE_URL);
 
 // Validation schemas
 const signupSchema = z.object({
@@ -270,9 +271,10 @@ export async function getCurrentUser() {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('PRISMA DEBUG: Decoded JWT:', decoded);
 
     const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
+      where: { id: Number(decoded.userId) },
       include: {
         role: true,
       },
