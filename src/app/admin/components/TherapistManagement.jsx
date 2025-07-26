@@ -1,11 +1,14 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { updatePhysiotherapistVerification } from '../../../lib/actions/physiotherapist';
+import { updatePhysiotherapistVerification, updatePhysiotherapistAvailability } from '../../../lib/actions/physiotherapist';
+import TherapistDetailModal from './TherapistDetailModal';
 
 export default function TherapistManagement({ therapists, error }) {
   const [isPending, startTransition] = useTransition();
   const [updatingId, setUpdatingId] = useState(null);
+  const [selectedTherapist, setSelectedTherapist] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleVerificationToggle = async (therapistId, currentStatus) => {
     setUpdatingId(therapistId);
@@ -24,6 +27,35 @@ export default function TherapistManagement({ therapists, error }) {
         setUpdatingId(null);
       }
     });
+  };
+
+  const handleAvailabilityToggle = async (therapistId, currentStatus) => {
+    setUpdatingId(therapistId);
+    
+    startTransition(async () => {
+      try {
+        const result = await updatePhysiotherapistAvailability(therapistId, !currentStatus);
+        if (result.success) {
+          window.location.reload();
+        } else {
+          alert('Failed to update availability status');
+        }
+      } catch (error) {
+        alert('Error updating availability status');
+      } finally {
+        setUpdatingId(null);
+      }
+    });
+  };
+
+  const handleTherapistClick = (therapist) => {
+    setSelectedTherapist(therapist);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedTherapist(null);
   };
 
   if (error) {
@@ -68,7 +100,11 @@ export default function TherapistManagement({ therapists, error }) {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {therapists.map((therapist) => (
-                <tr key={therapist.id} className={!therapist.isVerified ? 'bg-yellow-50' : ''}>
+                <tr 
+                  key={therapist.id} 
+                  className={`cursor-pointer hover:bg-gray-50 ${!therapist.isVerified ? 'bg-yellow-50' : ''}`}
+                  onClick={() => handleTherapistClick(therapist)}
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
@@ -124,23 +160,48 @@ export default function TherapistManagement({ therapists, error }) {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      onClick={() => handleVerificationToggle(therapist.id, therapist.isVerified)}
-                      disabled={isPending && updatingId === therapist.id}
-                      className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                        therapist.isVerified
-                          ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                          : 'bg-green-100 text-green-700 hover:bg-green-200'
-                      } disabled:opacity-50 disabled:cursor-not-allowed`}
-                    >
-                      {isPending && updatingId === therapist.id ? (
-                        'Updating...'
-                      ) : therapist.isVerified ? (
-                        'Unverify'
-                      ) : (
-                        'Verify'
-                      )}
-                    </button>
+                    <div className="flex flex-col space-y-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleVerificationToggle(therapist.id, therapist.isVerified);
+                        }}
+                        disabled={isPending && updatingId === therapist.id}
+                        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                          therapist.isVerified
+                            ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                            : 'bg-green-100 text-green-700 hover:bg-green-200'
+                        } disabled:opacity-50 disabled:cursor-not-allowed`}
+                      >
+                        {isPending && updatingId === therapist.id ? (
+                          'Updating...'
+                        ) : therapist.isVerified ? (
+                          'Unverify'
+                        ) : (
+                          'Verify'
+                        )}
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAvailabilityToggle(therapist.id, therapist.isAvailable);
+                        }}
+                        disabled={isPending && updatingId === therapist.id}
+                        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                          therapist.isAvailable
+                            ? 'bg-orange-100 text-orange-700 hover:bg-orange-200'
+                            : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                        } disabled:opacity-50 disabled:cursor-not-allowed`}
+                      >
+                        {isPending && updatingId === therapist.id ? (
+                          'Updating...'
+                        ) : therapist.isAvailable ? (
+                          'Make Unavailable'
+                        ) : (
+                          'Make Available'
+                        )}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -154,6 +215,12 @@ export default function TherapistManagement({ therapists, error }) {
         Verified: {therapists.filter(t => t.isVerified).length} | 
         Pending: {therapists.filter(t => !t.isVerified).length}
       </div>
+
+      <TherapistDetailModal
+        therapist={selectedTherapist}
+        isOpen={isModalOpen}
+        onClose={closeModal}
+      />
     </section>
   );
 }

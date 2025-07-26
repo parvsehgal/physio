@@ -221,10 +221,57 @@ export async function updatePhysiotherapistVerification(profileId, isVerified) {
       where: { id: profileId },
       data: { isVerified },
     });
-    return { success: true, data: updated };
+    
+    const serializedData = {
+      id: updated.id,
+      userId: updated.userId,
+      coruRegistration: updated.coruRegistration,
+      qualification: updated.qualification,
+      yearsExperience: updated.yearsExperience,
+      bio: updated.bio,
+      hourlyRate: Number(updated.hourlyRate),
+      profileImageUrl: updated.profileImageUrl,
+      isVerified: updated.isVerified,
+      isAvailable: updated.isAvailable,
+      createdAt: updated.createdAt.toISOString(),
+      updatedAt: updated.updatedAt.toISOString()
+    };
+    
+    return { success: true, data: serializedData };
   } catch (error) {
     console.error('Error updating physiotherapist verification:', error);
     return { success: false, error: 'Failed to update verification status' };
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function updatePhysiotherapistAvailability(profileId, isAvailable) {
+  try {
+    const updated = await prisma.physiotherapistProfile.update({
+      where: { id: profileId },
+      data: { isAvailable },
+    });
+    
+    const serializedData = {
+      id: updated.id,
+      userId: updated.userId,
+      coruRegistration: updated.coruRegistration,
+      qualification: updated.qualification,
+      yearsExperience: updated.yearsExperience,
+      bio: updated.bio,
+      hourlyRate: Number(updated.hourlyRate),
+      profileImageUrl: updated.profileImageUrl,
+      isVerified: updated.isVerified,
+      isAvailable: updated.isAvailable,
+      createdAt: updated.createdAt.toISOString(),
+      updatedAt: updated.updatedAt.toISOString()
+    };
+    
+    return { success: true, data: serializedData };
+  } catch (error) {
+    console.error('Error updating physiotherapist availability:', error);
+    return { success: false, error: 'Failed to update availability status' };
   } finally {
     await prisma.$disconnect();
   }
@@ -297,7 +344,7 @@ export async function getAllPhysiotherapistProfilesForAdmin() {
         coruRegistration: profile.coruRegistration,
         qualification: profile.qualification,
         yearsExperience: profile.yearsExperience,
-        hourlyRate: profile.hourlyRate,
+        hourlyRate: Number(profile.hourlyRate),
         bio: profile.bio,
         isVerified: profile.isVerified,
         isAvailable: profile.isAvailable,
