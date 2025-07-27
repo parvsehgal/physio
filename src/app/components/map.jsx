@@ -265,50 +265,37 @@ const IrelandPhysiotherapistMap = () => {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-emerald-50 via-white to-green-50 py-20 px-4">
-      <div className="max-w-6xl mx-auto">
+    <section className="relative bg-gradient-to-br from-emerald-50 via-white to-green-50 py-20">
+      <div className="w-full">
         {/* Header */}
-        <div className="text-center space-y-4 mb-12">
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900">
+        <div className="text-center space-y-4 mb-12 px-4 animate-fade-in-up">
+          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 animate-slide-in-down">
             Find Physiotherapists
-            <span className="text-emerald-500 block">Across Ireland</span>
+            <span className="text-emerald-500 block animate-pulse-subtle">Across Ireland</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto animate-fade-in delay-300">
             Discover certified physiotherapists in your area. Click on any
             marker to view available therapists and book your appointment.
           </p>
         </div>
 
         {/* Map Container */}
-        <div className="relative bg-white rounded-2xl shadow-2xl p-8 border overflow-hidden">
+        <div className="relative overflow-hidden animate-fade-in delay-500">
           <div
             ref={mapRef}
-            className="w-full h-96 rounded-xl bg-gray-100 relative z-10"
-            style={{ minHeight: "400px" }}
+            className="w-full h-[600px] bg-gray-100 relative z-10 hover:scale-105 transition-transform duration-700"
+            style={{ minHeight: "600px" }}
           />
 
           {/* Loading overlay */}
           {!L && (
-            <div className="absolute inset-0 bg-gray-100 rounded-xl flex items-center justify-center">
+            <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
               <div className="text-center space-y-4">
                 <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
                 <p className="text-gray-600">Loading map...</p>
               </div>
             </div>
           )}
-
-          {/* Legend */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-sm text-gray-600">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-sm"></div>
-              <span>Physiotherapist Available</span>
-            </div>
-            <div className="flex items-center gap-2"></div>
-            <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-emerald-500" />
-              <span>Scroll to zoom • Click and drag to pan</span>
-            </div>
-          </div>
         </div>
 
         {/* Location Details Modal */}

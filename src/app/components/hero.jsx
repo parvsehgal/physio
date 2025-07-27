@@ -63,39 +63,38 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-emerald-50 via-white to-green-50 py-20 px-4 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-emerald-50 via-white to-green-50 py-20 pb-32 px-4 overflow-hidden">
       {/* Background Image - Reduced size */}
       <div
-        className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-10"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
         style={{
-          backgroundImage: "url('/green.png')",
-          backgroundSize: "50%", // Reduced from cover to 50% of container
+          backgroundImage: "url('/bone.png')",
         }}
       ></div>
 
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
+          <div className="space-y-8 animate-fade-in-up">
             <div className="space-y-4">
-              <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight animate-slide-in-left">
                 Your Path to
-                <span className="text-emerald-500 block">
+                <span className="text-emerald-500 block animate-bounce-subtle">
                   Recovery Starts Here
                 </span>
               </h1>
-              <p className="text-xl text-gray-600 leading-relaxed">
+              <p className="text-xl text-gray-600 leading-relaxed animate-fade-in delay-300">
                 Book appointments with certified physiotherapists in your area.
                 Get personalized treatment plans and recover faster with expert
                 care.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button className="bg-[#7ce3b1] hover:bg-emerald-600 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="flex flex-col sm:flex-row gap-4 animate-fade-in delay-500">
+              <button className="bg-[#7ce3b1] hover:bg-emerald-600 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-pulse-subtle">
                 Book Appointment
               </button>
-              <button className="border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300">
+              <button className="border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300 hover:scale-105">
                 Find Therapists
               </button>
             </div>
@@ -104,8 +103,12 @@ const Hero = () => {
             <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-emerald-100">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="text-center sm:text-left">
-                  <p className="text-gray-900 font-semibold">Are you a physiotherapist?</p>
-                  <p className="text-gray-600 text-sm">Join our network and connect with patients</p>
+                  <p className="text-gray-900 font-semibold">
+                    Are you a physiotherapist?
+                  </p>
+                  <p className="text-gray-600 text-sm">
+                    Join our network and connect with patients
+                  </p>
                 </div>
                 <a
                   href="/register-therapist"
@@ -136,8 +139,8 @@ const Hero = () => {
             </div>
           </div>
 
-          <div className="relative">
-            <div className="relative z-10 bg-white rounded-2xl shadow-2xl p-8 border">
+          <div className="relative animate-slide-in-right">
+            <div className="relative z-10 bg-white rounded-2xl shadow-2xl p-8 border hover:shadow-emerald-100 transition-all duration-500">
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h3 className="text-2xl font-bold text-gray-900">
@@ -214,8 +217,8 @@ const Hero = () => {
               </div>
             </div>
 
-            <div className="absolute -top-4 -right-4 w-24 h-24 bg-emerald-200 rounded-full opacity-60"></div>
-            <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-emerald-100 rounded-full opacity-40"></div>
+            <div className="absolute -top-4 -right-4 w-24 h-24 bg-emerald-200 rounded-full opacity-60 animate-float"></div>
+            <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-emerald-100 rounded-full opacity-40 animate-float-delayed"></div>
           </div>
         </div>
       </div>
