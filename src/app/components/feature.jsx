@@ -3,37 +3,37 @@ import { Clock, Shield, Star, Stethoscope, MapPin, Heart } from "lucide-react";
 const Features = () => {
   const features = [
     {
-      icon: <Clock className="h-8 w-8 text-[#7ce3b1]-500" />,
+      icon: <Clock className="h-8 w-8 text-[#7ce3b1]" />,
       title: "24/7 Booking",
       description:
         "Schedule appointments anytime, anywhere. Our platform is available round the clock for your convenience.",
     },
     {
-      icon: <Shield className="h-8 w-8 text-[#7ce3b1]-600" />,
+      icon: <Shield className="h-8 w-8 text-[#7ce3b1]" />,
       title: "Verified Therapists",
       description:
         "All our physiotherapists are licensed, certified, and thoroughly vetted to ensure quality care.",
     },
     {
-      icon: <Star className="h-8 w-8 text-black-500" />,
+      icon: <Star className="h-8 w-8 text-[#7ce3b1]" />,
       title: "Top-Rated Care",
       description:
         "Choose from highly-rated therapists with excellent patient reviews and proven track records.",
     },
     {
-      icon: <Stethoscope className="h-8 w-8 text-[#7ce3b1]-700" />,
+      icon: <Stethoscope className="h-8 w-8 text-[#7ce3b1]" />,
       title: "Specialized Treatment",
       description:
         "Find specialists for sports injuries, chronic pain, post-surgery recovery, and more.",
     },
     {
-      icon: <MapPin className="h-8 w-8 text-[#7ce3b1]-500" />,
+      icon: <MapPin className="h-8 w-8 text-[#7ce3b1]" />,
       title: "Local & Remote",
       description:
         "Choose between in-person visits at local clinics or convenient telehealth consultations.",
     },
     {
-      icon: <Heart className="h-8 w-8 text-[#7ce3b1]-600" />,
+      icon: <Heart className="h-8 w-8 text-[#7ce3b1]" />,
       title: "Personalized Care",
       description:
         "Get treatment plans tailored to your specific needs and recovery goals.",

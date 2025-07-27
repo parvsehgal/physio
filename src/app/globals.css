@@ -171,6 +171,36 @@ body {
   animation: pulseSubtle 2s ease-in-out infinite;
 }
 
+/* Form Input Overrides - Force dark black text across all browsers */
+input[type="text"],
+input[type="email"], 
+input[type="password"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+input[type="search"],
+textarea,
+select {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  -webkit-appearance: none !important;
+}
+
+input[type="text"]:autofill,
+input[type="email"]:autofill,
+input[type="password"]:autofill,
+input[type="tel"]:autofill,
+input[type="number"]:autofill,
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #000000 !important;
+  color: #000000 !important;
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  box-shadow: 0 0 0 1000px white inset !important;
+}
+
 /* Delay Classes */
 .delay-300 {
   animation-delay: 300ms;
