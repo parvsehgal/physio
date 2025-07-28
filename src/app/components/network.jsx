@@ -7,7 +7,10 @@ const Network = () => {
           <div className="space-y-6 animate-fade-in-up">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 animate-slide-in-left">
               Connected Healthcare
-              <span className="block animate-pulse-subtle" style={{ color: "#7ce3b1" }}>
+              <span
+                className="block animate-pulse-subtle"
+                style={{ color: "#7ce3b1" }}
+              >
                 Network
               </span>
               <button onClick={requireAuth}>testing</button>
@@ -51,7 +54,7 @@ const Network = () => {
           <div className="relative animate-slide-in-right">
             <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-1 shadow-lg hover:shadow-emerald-200 transition-all duration-500 hover:scale-105">
               <img
-                src="/green.png"
+                src="/new.jpeg"
                 alt="Healthcare Network Diagram"
                 className="w-full h-auto rounded-lg animate-float"
               />

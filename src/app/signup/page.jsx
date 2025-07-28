@@ -1,5 +1,15 @@
 "use client";
-import { Calendar, MapPin, Users, Mail, Lock, User, Phone } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  Users,
+  Mail,
+  Lock,
+  User,
+  Phone,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { signup, getCurrentUser } from "../../lib/auth";
 
@@ -21,6 +31,8 @@ const SignupPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [shouldShowSignup, setShouldShowSignup] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Check if user is already logged in on component mount
   useEffect(() => {
@@ -124,6 +136,14 @@ const SignupPage = () => {
         setIsLoading(false);
       }
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   // Show loading spinner while checking auth status
@@ -309,13 +329,24 @@ const SignupPage = () => {
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                       <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         name="password"
                         value={formData.password}
                         onChange={handleInputChange}
-                        className={`w-full pl-10 p-3 border ${errors.password ? "border-red-500" : "border-gray-300"} rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent`}
+                        className={`w-full pl-10 pr-10 p-3 border ${errors.password ? "border-red-500" : "border-gray-300"} rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent`}
                         placeholder="Create password"
                       />
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 focus:outline-none"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-5 w-5" />
+                        ) : (
+                          <Eye className="h-5 w-5" />
+                        )}
+                      </button>
                     </div>
                     {errors.password && (
                       <p className="text-red-500 text-sm mt-1">
@@ -331,13 +362,24 @@ const SignupPage = () => {
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                       <input
-                        type="password"
+                        type={showConfirmPassword ? "text" : "password"}
                         name="confirmPassword"
                         value={formData.confirmPassword}
                         onChange={handleInputChange}
-                        className={`w-full pl-10 p-3 border ${errors.confirmPassword ? "border-red-500" : "border-gray-300"} rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent`}
+                        className={`w-full pl-10 pr-10 p-3 border ${errors.confirmPassword ? "border-red-500" : "border-gray-300"} rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent`}
                         placeholder="Confirm password"
                       />
+                      <button
+                        type="button"
+                        onClick={toggleConfirmPasswordVisibility}
+                        className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 focus:outline-none"
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff className="h-5 w-5" />
+                        ) : (
+                          <Eye className="h-5 w-5" />
+                        )}
+                      </button>
                     </div>
                     {errors.confirmPassword && (
                       <p className="text-red-500 text-sm mt-1">
