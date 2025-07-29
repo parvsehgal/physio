@@ -47,7 +47,7 @@ const Header = ({ user = null }) => {
               Services
             </a>
             <a
-              href="#"
+              href="/about"
               className="text-gray-700 hover:text-[#7ce3b1] font-medium transition-colors duration-200"
             >
               About
@@ -89,13 +89,21 @@ const Header = ({ user = null }) => {
                         </p>
                       )}
                     </div>
-                    {user.role?.name !== 'Admin' && (
+                    {user.role?.name !== "Admin" && (
                       <a
-                        href={user.role?.name === 'physiotherapist' ? '/therapist-bookings' : '/bookings'}
+                        href={
+                          user.role?.name === "physiotherapist"
+                            ? "/therapist-bookings"
+                            : "/bookings"
+                        }
                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center space-x-2"
                       >
                         <Calendar className="h-4 w-4" />
-                        <span>{user.role?.name === 'physiotherapist' ? 'My Appointments' : 'My Bookings'}</span>
+                        <span>
+                          {user.role?.name === "physiotherapist"
+                            ? "My Appointments"
+                            : "My Bookings"}
+                        </span>
                       </a>
                     )}
                     <button
@@ -189,13 +197,21 @@ const Header = ({ user = null }) => {
                         )}
                       </div>
                     </div>
-                    {user.role?.name !== 'Admin' && (
+                    {user.role?.name !== "Admin" && (
                       <a
-                        href={user.role?.name === 'physiotherapist' ? '/therapist-bookings' : '/bookings'}
+                        href={
+                          user.role?.name === "physiotherapist"
+                            ? "/therapist-bookings"
+                            : "/bookings"
+                        }
                         className="w-full text-left text-gray-700 hover:text-gray-900 font-medium py-2 px-2 transition-colors duration-200 flex items-center space-x-2"
                       >
                         <Calendar className="h-4 w-4" />
-                        <span>{user.role?.name === 'physiotherapist' ? 'My Appointments' : 'My Bookings'}</span>
+                        <span>
+                          {user.role?.name === "physiotherapist"
+                            ? "My Appointments"
+                            : "My Bookings"}
+                        </span>
                       </a>
                     )}
                     <button
