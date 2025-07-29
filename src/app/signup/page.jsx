@@ -166,8 +166,8 @@ const SignupPage = () => {
       <div
         className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-10"
         style={{
-          backgroundImage: "url('/green.png')",
-          backgroundSize: "50%",
+          backgroundImage: "url('/new.jpeg')",
+          backgroundSize: "100%",
         }}
       ></div>
 

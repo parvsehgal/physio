@@ -7,7 +7,7 @@ const CTA = () => {
       {/* Background Network Image */}
       <div className="absolute inset-0 opacity-10">
         <img
-          src="/networkimg.png"
+          src="/new.jpeg"
           alt="Network Background"
           className="w-full h-full object-cover"
         />
