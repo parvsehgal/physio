@@ -41,7 +41,7 @@ const Header = ({ user = null }) => {
               Find Therapists
             </a>
             <a
-              href="#"
+              href="/services"
               className="text-gray-700 hover:text-[#7ce3b1] font-medium transition-colors duration-200"
             >
               Services
