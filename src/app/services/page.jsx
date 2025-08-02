@@ -59,7 +59,7 @@ const SpecializationsPage = () => {
     const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
     const formattedService = formatServiceName(selectedService.name);
     const formattedDate = formatDate(selectedDate);
-    const url = `http://localhost:3000/find/${formattedService}/dublin/${formattedDate}`;
+    const url = `/find/${formattedService}/dublin/${formattedDate}`;
     window.location.href = url;
   };
 
