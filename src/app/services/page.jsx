@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react";
 import { getSpecializations } from "../../lib/services/specialization";
 import { Stethoscope, Heart, Users, Star, Calendar, X } from "lucide-react";
-
+import TherapistSectionTR4 from "../components/TherapistSectionTR4";
+import { getTherapistsBySpecializationName } from "@/lib/actions/physiotherapist";
 const SpecializationsPage = () => {
   const [specializations, setSpecializations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,13 +11,16 @@ const SpecializationsPage = () => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedSpecialization,setSelectedSpecializaion]=useState(null)
+
+
 
   useEffect(() => {
     const fetchSpecializations = async () => {
       try {
         setLoading(true);
         const response = await getSpecializations();
-        
+        console.log(response)
         if (response.success) {
           setSpecializations(response.data);
         } else {
@@ -29,9 +33,18 @@ const SpecializationsPage = () => {
         setLoading(false);
       }
     };
+ const fetchDataAccordingToSpecialization=async (specialization='Musculoskeletal Physiotherapy')=>{
 
+    const result = await getTherapistsBySpecializationName(specialization)
+console.log(result)
+  }
     fetchSpecializations();
+   fetchDataAccordingToSpecialization()
   }, []);
+
+ 
+
+
 
   // Calendar helper functions
   const formatServiceName = (name) => {
@@ -106,6 +119,7 @@ const SpecializationsPage = () => {
 
     return (
       <div className="bg-white rounded-xl p-6 shadow-xl max-w-md mx-auto">
+        
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-bold text-gray-900">
             Select Date for {selectedService?.name}
@@ -158,6 +172,7 @@ const SpecializationsPage = () => {
   return (
     <>
       <section className="relative bg-gradient-to-br from-[#7ce3b1]/10 via-white to-[#7ce3b1]/5 min-h-screen py-20 px-4 overflow-hidden">
+       
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
@@ -168,8 +183,17 @@ const SpecializationsPage = () => {
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto">
+
+
+{/* Random therapist section */}
+
+         <TherapistSectionTR4/>
+
+
+
         {/* Header Section */}
         <div className="text-center space-y-6 mb-16 animate-fade-in-up">
+        
           <div className="inline-flex items-center gap-2 bg-[#7ce3b1]/20 px-4 py-2 rounded-full">
             <Stethoscope className="h-5 w-5 text-[#7ce3b1]" />
             <span className="text-[#5eb893] font-medium">Our Specializations</span>

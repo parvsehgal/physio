@@ -23,19 +23,19 @@ const Header = ({ user = null }) => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3 mt-2">
-            <a href="/" className="cursor-pointer">
-              <img
-                src="/logo.png"
-                alt="Abaile Logo"
-                className="h-40 w-40 translate-y--9 translate-x-12 hover:opacity-80 transition-opacity duration-200"
-              />
-            </a>
-          </div>
+  <a href="/" className="cursor-pointer block">
+    <img
+      src="/logo.png"
+      alt="Abaile Logo"
+      className="h-10 sm:h-12 md:h-16 lg:h-20 w-auto max-w-[160px] transition-opacity duration-200 hover:opacity-80"
+    />
+  </a>
+</div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <a
-              href="#"
+              href="find-therapist"
               className="text-gray-700 hover:text-[#7ce3b1] font-medium transition-colors duration-200"
             >
               Find Therapists
