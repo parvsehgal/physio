@@ -53,7 +53,7 @@ const Header = ({ user = null }) => {
               About
             </a>
             <a
-              href="#"
+              href="/contact"
               className="text-gray-700 hover:text-[#7ce3b1] font-medium transition-colors duration-200"
             >
               Contact
@@ -170,7 +170,7 @@ const Header = ({ user = null }) => {
                 About
               </a>
               <a
-                href="#"
+                href="/contact"
                 className="text-gray-700 hover:text-[#7ce3b1] font-medium py-2 transition-colors duration-200"
               >
                 Contact
