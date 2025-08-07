@@ -4,6 +4,305 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
+export async function getTherapistsBySpecializationName(specializationName) {
+  try {
+    console.log(`Fetching therapists with specialization: ${specializationName}`);
+
+    const therapists = await prisma.physiotherapistProfile.findMany({
+      where: {
+        isAvailable: true,
+        specializations: {
+          some: {
+            specialization: {
+              name: specializationName,
+              isActive: true
+            }
+          }
+        }
+      },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true
+          }
+        },
+        specializations: {
+          include: {
+            specialization: {
+              select: {
+                name: true
+              }
+            }
+          }
+        },
+        clinicAssociations: {
+          include: {
+            clinic: {
+              select: {
+                id: true,
+                name: true,
+                addressLine1: true,
+                city: {
+                  select: {
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        },
+        reviews: {
+          select: {
+            rating: true
+          }
+        }
+      }
+    });
+
+    const transformed = therapists.map((physio) => {
+      const avgRating = physio.reviews.length > 0
+        ? physio.reviews.reduce((sum, review) => sum + review.rating, 0) / physio.reviews.length
+        : 4.5;
+
+      return {
+        id: physio.id,
+        name: `Dr. ${physio.user.firstName} ${physio.user.lastName}`,
+        specialization: physio.specializations?.[0]?.specialization?.name || specializationName,
+        experience: `${physio.yearsExperience || 5} years`,
+        rating: Math.round(avgRating * 10) / 10,
+        reviews: physio.reviews.length,
+        location: physio.clinicAssociations?.[0]?.clinic?.city?.name || 'Unknown',
+        image: physio.profileImageUrl || '/profile.png',
+        qualifications: [
+          physio.qualification || 'BSc Physiotherapy',
+          `CORU: ${physio.coruRegistration || 'Registered'}`
+        ],
+        availableSlots: ['09:00 AM', '11:00 AM', '02:00 PM', '04:00 PM'],
+        price: `€${Math.round(Number(physio.hourlyRate) || 75)}`,
+        email: physio.user.email,
+        phone: physio.user.phone,
+        bio: physio.bio,
+        clinics: physio.clinicAssociations.map((assoc) => ({
+          id: assoc.clinic.id,
+          name: assoc.clinic.name,
+          address: assoc.clinic.addressLine1,
+          city: assoc.clinic.city.name
+        }))
+      };
+    });
+
+    return { success: true, data: transformed };
+  } catch (error) {
+    console.error('Error fetching therapists by specialization:', error);
+    return { success: false, error: 'Failed to fetch therapists' };
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+
+
+
+
+
+
+export async function getAllAvailablePhysiotherapists(skip = 0, limit = 50) {
+  try {
+    console.log(`Fetching ALL available physiotherapists (skip: ${skip}, limit: ${limit})`);
+
+    const physiotherapists = await prisma.physiotherapistProfile.findMany({
+      where: {
+        isAvailable: true
+      },
+      skip,
+      take: limit,
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true
+          }
+        },
+        specializations: {
+          include: {
+            specialization: {
+              select: {
+                name: true
+              }
+            }
+          }
+        },
+        clinicAssociations: {
+          include: {
+            clinic: {
+              select: {
+                id: true,
+                name: true,
+                addressLine1: true,
+                city: {
+                  select: {
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        },
+        reviews: {
+          select: {
+            rating: true
+          }
+        }
+      }
+    });
+
+    console.log(`Found ${physiotherapists.length} physiotherapists (paginated)`);
+
+    const transformed = physiotherapists.map(physio => {
+      const avgRating = physio.reviews.length > 0 
+        ? physio.reviews.reduce((sum, review) => sum + review.rating, 0) / physio.reviews.length
+        : 4.5;
+
+      return {
+        id: physio.id,
+        name: `Dr. ${physio.user.firstName} ${physio.user.lastName}`,
+        specialization: physio.specializations?.[0]?.specialization?.name || 'Physiotherapy',
+        experience: `${physio.yearsExperience || 5} years`,
+        rating: Math.round(avgRating * 10) / 10,
+        reviews: physio.reviews.length,
+        location: physio.clinicAssociations?.[0]?.clinic?.city?.name || 'Unknown',
+        image: physio.profileImageUrl || '/profile.png',
+        qualifications: [
+          physio.qualification || 'BSc Physiotherapy',
+          `CORU: ${physio.coruRegistration || 'Registered'}`
+        ],
+        availableSlots: ['09:00 AM', '11:00 AM', '02:00 PM', '04:00 PM'],
+        price: `€${Math.round(Number(physio.hourlyRate) || 75)}`,
+        email: physio.user.email,
+        phone: physio.user.phone,
+        bio: physio.bio,
+        clinics: physio.clinicAssociations.map(assoc => ({
+          id: assoc.clinic.id,
+          name: assoc.clinic.name,
+          address: assoc.clinic.addressLine1,
+          city: assoc.clinic.city.name
+        }))
+      };
+    });
+
+    return { success: true, data: transformed };
+  } catch (error) {
+    console.error('Error fetching all physiotherapists:', error);
+    return { success: false, error: 'Failed to fetch physiotherapists' };
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+
+
+export async function getTwentyRandomTherapists() {
+  try {
+    const all = await prisma.physiotherapistProfile.findMany({
+      where: {
+        isAvailable: true
+      },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true
+          }
+        },
+        specializations: {
+          include: {
+            specialization: {
+              select: {
+                name: true
+              }
+            }
+          }
+        },
+        clinicAssociations: {
+          include: {
+            clinic: {
+              select: {
+                id: true,
+                name: true,
+                addressLine1: true,
+                city: {
+                  select: {
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        },
+        reviews: {
+          select: {
+            rating: true
+          }
+        }
+      }
+    });
+
+    // Shuffle and pick 20
+    const shuffled = all.sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, 20);
+
+    // Transform the data
+    const therapists = selected.map(physio => {
+      const avgRating = physio.reviews.length > 0
+        ? physio.reviews.reduce((sum, review) => sum + review.rating, 0) / physio.reviews.length
+        : 4.5;
+
+      return {
+        id: physio.id,
+        name: `Dr. ${physio.user.firstName} ${physio.user.lastName}`,
+        specialization: physio.specializations?.[0]?.specialization?.name || 'Physiotherapy',
+        experience: `${physio.yearsExperience || 5} years`,
+        rating: Math.round(avgRating * 10) / 10,
+        reviews: physio.reviews.length,
+        location: physio.clinicAssociations?.[0]?.clinic?.city?.name || 'Unknown',
+        image: physio.profileImageUrl || '/profile.png',
+        qualifications: [
+          physio.qualification || 'BSc Physiotherapy',
+          `CORU: ${physio.coruRegistration || 'Registered'}`
+        ],
+        availableSlots: ['09:00 AM', '11:00 AM', '02:00 PM', '04:00 PM'],
+        price: `€${Math.round(Number(physio.hourlyRate) || 75)}`,
+        email: physio.user.email,
+        phone: physio.user.phone,
+        bio: physio.bio,
+        clinics: physio.clinicAssociations.map(assoc => ({
+          id: assoc.clinic.id,
+          name: assoc.clinic.name,
+          address: assoc.clinic.addressLine1,
+          city: assoc.clinic.city.name
+        }))
+      };
+    });
+
+    return { success: true, data: therapists };
+  } catch (error) {
+    console.error("Error fetching 20 random therapists:", error);
+    return { success: false, error: "Failed to fetch therapists" };
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+
+
+
 export async function getPhysiotherapistsByLocationAndSpecialization(location, specialization) {
   try {
     // Debug: Log what we're searching for
