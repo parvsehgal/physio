@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { Search, X } from 'lucide-react'; // Optional icon usage
+import { Search, X } from 'lucide-react'; 
 
 export default function SearchBar({
   value,
