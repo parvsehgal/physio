@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { Search, X } from 'lucide-react'; 
+import { Search, X } from 'lucide-react';
 
 export default function SearchBar({
   value,
@@ -13,28 +13,23 @@ export default function SearchBar({
   const [showDropdown, setShowDropdown] = useState(false);
   const wrapperRef = useRef(null);
 
-  // Debounce input
   useEffect(() => {
     const handler = setTimeout(() => {
       onDebouncedChange(input);
     }, 300);
-
     return () => clearTimeout(handler);
   }, [input, onDebouncedChange]);
 
-  // Sync input from props
   useEffect(() => {
     setInput(value);
   }, [value]);
 
-  // Click outside to close
   useEffect(() => {
     function handleClickOutside(event) {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
         setShowDropdown(false);
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
@@ -46,10 +41,7 @@ export default function SearchBar({
   };
 
   return (
-    <div
-      ref={wrapperRef}
-      className="relative max-w-xl mx-auto w-full transition-all"
-    >
+    <div ref={wrapperRef} className="relative max-w-xl mx-auto w-full transition-all">
       <div className="relative flex items-center">
         <Search className="absolute left-3 text-gray-400 h-5 w-5" />
         <input
@@ -76,17 +68,68 @@ export default function SearchBar({
       </div>
 
       {showDropdown && input.trim() !== '' && suggestions.length > 0 && (
-        <ul className="absolute top-full left-0 w-full bg-white border border-gray-200 mt-2 rounded-xl shadow-lg z-50 max-h-64 overflow-y-auto animate-fade-in">
+        <ul className="absolute top-full left-0 w-full bg-white border border-gray-200 mt-2 rounded-xl shadow-lg z-50 max-h-96 overflow-y-auto animate-fade-in">
           {suggestions.map((item) => (
             <li
               key={item.id}
+              className="flex items-start gap-4 px-4 py-4 hover:bg-emerald-50 transition cursor-pointer"
               onClick={() => handleSelect(item)}
-              className="px-4 py-3 hover:bg-emerald-50 transition cursor-pointer"
             >
-              <div className="font-semibold text-gray-800">{item.name}</div>
-              <div className="text-sm text-gray-500">
-                {item.specialization} – {item.location}
+              {/* Image */}
+              <img
+                src={item.image || '/default-avatar.png'}
+                alt={item.name}
+                className="w-16 h-16 rounded-full object-cover border"
+              />
+
+              {/* Info */}
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold text-gray-900">
+                    {item.name}
+                  </h3>
+                  <span className="text-sm text-yellow-600 font-medium">
+                    ⭐ {item.rating || 'N/A'}
+                  </span>
+                </div>
+
+                <p className="text-sm text-gray-600">{item.specialization}</p>
+
+                {item.clinics?.length > 0 && (
+                  <p className="text-sm text-gray-500">
+                    {item.clinics[0].name} – {item.clinics[0].city}
+                  </p>
+                )}
+
+                <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                  {item.bio}
+                </p>
+
+                <div className="mt-2 flex items-center justify-between">
+                  {/* Price */}
+                  <span className="text-sm font-medium text-emerald-600">
+                    {item.price}
+                  </span>
+
+                  {/* First available slot */}
+                  {item.availableSlots?.length > 0 && (
+                    <span className="text-sm text-gray-400">
+                      ⏰ {item.availableSlots[0]}
+                    </span>
+                  )}
+                </div>
               </div>
+
+              {/* Book Now Button */}
+              <button
+                className="ml-2 px-3 py-1 bg-emerald-500 text-white text-sm rounded-md hover:bg-emerald-600 transition"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSelect(item);
+                }}
+              >
+                Book Now
+              </button>
             </li>
           ))}
         </ul>

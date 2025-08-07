@@ -17,6 +17,7 @@ import {
   ChevronDown,
   Sparkles,
 } from "lucide-react";
+import Footer from "../components/footer";
 
 const AboutUsPage = () => {
   const [formData, setFormData] = useState({
@@ -145,6 +146,7 @@ const AboutUsPage = () => {
   };
 
   return (
+    <>
     <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Animated Background Pattern */}
       <div className="fixed inset-0 opacity-5 pointer-events-none">
@@ -646,6 +648,11 @@ const AboutUsPage = () => {
         <ChevronDown className="w-6 h-6 rotate-180 group-hover:-translate-y-1 transition-transform duration-300" />
       </button>
     </div>
+    {/*  footer */}
+    <Footer/>
+    </>
+  
+
   );
 };
 

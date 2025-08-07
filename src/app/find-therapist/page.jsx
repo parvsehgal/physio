@@ -8,6 +8,7 @@ import {
 import TherapistCard from '../components/TherapistCard';
 import SearchBar from '../components/SearchBar';
 import SkeletonCard from '../components/SkeletonCard';
+import Footer from '../components/footer';
 
 export default function FindTherapistPage() {
   const [therapists, setTherapists] = useState([]);
@@ -19,13 +20,11 @@ export default function FindTherapistPage() {
   const [useFallback, setUseFallback] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
 
-
   const observerRef = useRef(null);
   const specialization = 'Geriatric Physiotherapy';
   const limit = 10;
   const [initialLoad, setInitialLoad] = useState(true);
 
-  // Fetch  therapists with pagination
   const fetchFallbackTherapists = useCallback(async (reset = false, skipCount = 0) => {
     setLoading(true);
     const result = await getAllAvailablePhysiotherapists(skipCount, limit);
@@ -37,7 +36,6 @@ export default function FindTherapistPage() {
     setLoading(false);
   }, []);
 
-  // Initial load: trying to get location-based first
   useEffect(() => {
     const loadInitial = async () => {
       if (!navigator.geolocation) {
@@ -58,7 +56,7 @@ export default function FindTherapistPage() {
               const result = await getPhysiotherapistsByLocationAndSpecialization(city, specialization);
               if (result.success && result.data.length > 0) {
                 setTherapists(result.data);
-                setHasMore(false); 
+                setHasMore(false);
                 setUseFallback(false);
               } else {
                 setLocation('Random Locations');
@@ -87,40 +85,39 @@ export default function FindTherapistPage() {
     loadInitial();
   }, [fetchFallbackTherapists]);
 
-  // Infinite scroll observer
- const lastElementRef = useCallback(
-  node => {
-    if (loading || !hasMore || !useFallback || isSearching) return; // 🛑 Stop if searching
-    if (observerRef.current) observerRef.current.disconnect();
+  const lastElementRef = useCallback(
+    node => {
+      if (loading || !hasMore || !useFallback || isSearching) return;
+      if (observerRef.current) observerRef.current.disconnect();
 
-    observerRef.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting) {
-        setSkip(prev => prev + limit);
-      }
-    });
+      observerRef.current = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+          setSkip(prev => prev + limit);
+        }
+      });
 
-    if (node) observerRef.current.observe(node);
-  },
-  [loading, hasMore, useFallback, isSearching]
-);
+      if (node) observerRef.current.observe(node);
+    },
+    [loading, hasMore, useFallback, isSearching]
+  );
 
-useEffect(() => {
-  setIsSearching(search.trim().length > 0);
-}, [search]);
-  // Load more fallback data on scroll end......
+  useEffect(() => {
+    setIsSearching(search.trim().length > 0);
+  }, [search]);
+
   useEffect(() => {
     if (skip === 0 || !useFallback) return;
     fetchFallbackTherapists(false, skip);
   }, [skip, fetchFallbackTherapists, useFallback]);
 
- const filtered = therapists.filter(t =>
-  [t.name, t.specialization, t.bio, t.location]
-    .some(field => field?.toLowerCase().includes(search.toLowerCase()))
-).slice(0, 50);
+  const filtered = therapists.filter(t =>
+    [t.name, t.specialization, t.bio, t.location]
+      .some(field => field?.toLowerCase().includes(search.toLowerCase()))
+  ).slice(0, 50);
+
   return (
     <section className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 py-12 px-4">
       <div className="max-w-screen-xl mx-auto relative z-10">
-   
 
         <SearchBar
           value={search}
@@ -132,43 +129,38 @@ useEffect(() => {
           onSelectSuggestion={(t) => setSearch(t.name)}
         />
 
-<div className="bg-[#f9fdfc] py-20 px-6 md:px-20 text-center relative">
-  <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
-    Expert Care in <br />
-    <span className="text-green-500">Every Specialty</span>
-  </h2>
-  <p className="mt-4 text-gray-600 text-base md:text-lg max-w-2xl mx-auto">
-    Discover our comprehensive range of physiotherapy specializations. Each treatment
-    area is designed to provide targeted care for your specific needs.
-  </p>
+        <div className="bg-[#f9fdfc] py-20 px-6 md:px-20 text-center relative">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+            Expert Care in <br />
+            <span className="text-green-500">Every Specialty</span>
+          </h2>
+          <p className="mt-4 text-gray-600 text-base md:text-lg max-w-2xl mx-auto">
+            Discover our comprehensive range of physiotherapy specializations. Each treatment
+            area is designed to provide targeted care for your specific needs.
+          </p>
+          <div className="flex flex-wrap justify-center gap-8 mt-6 text-sm text-gray-700">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M12 2a10 10 0 100 20 10 10 0 000-20zM12 6v6l4 2" />
+              </svg>
+              Personalized Care
+            </div>
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zM6 20v-2c0-1.1.9-2 2-2h8c1.1 0 2 .9 2 2v2" />
+              </svg>
+              Expert Therapists
+            </div>
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.45-6.3L22 9.24l-6.38-.55L12 3 8.38 8.69 2 9.24l5.27 5.46L5.82 21z" />
+              </svg>
+              Proven Results
+            </div>
+          </div>
+        </div>
 
-  <div className="flex flex-wrap justify-center gap-8 mt-6 text-sm text-gray-700">
-    <div className="flex items-center gap-2">
-      <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path d="M12 2a10 10 0 100 20 10 10 0 000-20zM12 6v6l4 2" />
-      </svg>
-      Personalized Care
-    </div>
-    <div className="flex items-center gap-2">
-      <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zM6 20v-2c0-1.1.9-2 2-2h8c1.1 0 2 .9 2 2v2" />
-      </svg>
-      Expert Therapists
-    </div>
-    <div className="flex items-center gap-2">
-      <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path d="M12 17.27L18.18 21l-1.45-6.3L22 9.24l-6.38-.55L12 3 8.38 8.69 2 9.24l5.27 5.46L5.82 21z" />
-      </svg>
-      Proven Results
-    </div>
-  </div>
-</div>
-
-
-
-
-
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {initialLoad
             ? Array.from({ length: 8 }).map((_, idx) => <SkeletonCard key={idx} />)
             : filtered.map((t, index) =>
@@ -182,24 +174,25 @@ useEffect(() => {
               )}
         </div>
 
-    <div className="mt-20 text-center space-y-6 animate-fade-in delay-700">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-[#7ce3b1]/30 shadow-lg max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Ready to Start Your Recovery Journey?
-              </h2>
-              <p className="text-xl text-gray-600 mb-6">
-                Book an appointment with our certified physiotherapists and get personalized treatment plans.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="bg-gradient-to-r from-[#7ce3b1] to-[#6dd4a2] hover:from-[#6dd4a2] hover:to-[#5eb893] text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-                  Book Appointment Now
-                </button>
-                <button className="border-2 border-[#7ce3b1] text-[#5eb893] hover:bg-[#7ce3b1]/10 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300 hover:scale-105">
-                  Find Therapists
-                </button>
-              </div>
+        <div className="mt-20 text-center space-y-6 animate-fade-in delay-700">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-[#7ce3b1]/30 shadow-lg max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Ready to Start Your Recovery Journey?
+            </h2>
+            <p className="text-xl text-gray-600 mb-6">
+              Book an appointment with our certified physiotherapists and get personalized treatment plans.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="bg-gradient-to-r from-[#7ce3b1] to-[#6dd4a2] hover:from-[#6dd4a2] hover:to-[#5eb893] text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                Book Appointment Now
+              </button>
+              <button className="border-2 border-[#7ce3b1] text-[#5eb893] hover:bg-[#7ce3b1]/10 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300 hover:scale-105">
+                Find Therapists
+              </button>
             </div>
           </div>
+        </div>
+
         {loading && skip > 0 && (
           <p className="text-center text-gray-500 mt-4">Loading more therapists...</p>
         )}
@@ -209,9 +202,7 @@ useEffect(() => {
         )}
       </div>
 
-
-
+      <Footer />
     </section>
-
   );
 }

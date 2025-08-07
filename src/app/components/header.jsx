@@ -35,7 +35,7 @@ const Header = ({ user = null }) => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <a
-              href="find-therapist"
+              href="/find-therapist"
               className="text-gray-700 hover:text-[#7ce3b1] font-medium transition-colors duration-200"
             >
               Find Therapists
@@ -152,19 +152,19 @@ const Header = ({ user = null }) => {
           <div className="md:hidden py-4 border-t border-gray-100">
             <nav className="flex flex-col space-y-4">
               <a
-                href="#"
+                href="/find-therapis"
                 className="text-gray-700 hover:text-[#7ce3b1] font-medium py-2 transition-colors duration-200"
               >
                 Find Therapists
               </a>
               <a
-                href="#"
+                href="/services"
                 className="text-gray-700 hover:text-[#7ce3b1] font-medium py-2 transition-colors duration-200"
               >
                 Services
               </a>
               <a
-                href="#"
+                href="/about"
                 className="text-gray-700 hover:text-[#7ce3b1] font-medium py-2 transition-colors duration-200"
               >
                 About
