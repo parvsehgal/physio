@@ -5,11 +5,11 @@ const Network = () => {
       <div className="max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 animate-fade-in-up">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 animate-slide-in-left">
+            <h2 className="text-4xl lg:text-5xl font-bold text-green-500 animate-slide-in-left">
               Connected Healthcare
               <span
-                className="block animate-pulse-subtle"
-                style={{ color: "#7ce3b1" }}
+                className="block animate-pulse-subtle text-green-500"
+                
               >
                 Network
               </span>

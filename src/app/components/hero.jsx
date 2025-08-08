@@ -77,9 +77,9 @@ const Hero = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           <div className="space-y-8 animate-fade-in-up">
             <div className="space-y-4">
-              <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight animate-slide-in-left">
+              <h1 className="text-5xl lg:text-6xl font-bold text-green-500 leading-tight animate-slide-in-left">
                 Your Path to
-                <span className="text-emerald-500 block animate-bounce-subtle">
+                <span className="text-green -500 block animate-bounce-subtle">
                   Recovery Starts Here
                 </span>
               </h1>
@@ -91,10 +91,10 @@ const Hero = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 animate-fade-in delay-500">
-              <button className="bg-[#7ce3b1] hover:bg-emerald-600 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-pulse-subtle">
+              <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-pulse-subtle">
                 Book Appointment
               </button>
-              <button className="border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300 hover:scale-105">
+              <button className="border-2 bg-emerald-600 border-emerald-500 hover:bg-emerald-50 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300 hover:scale-105">
                 Find Therapists
               </button>
             </div>
@@ -143,7 +143,7 @@ const Hero = () => {
             <div className="relative z-10 bg-white rounded-2xl shadow-2xl p-8 border hover:shadow-emerald-100 transition-all duration-500">
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-2xl font-bold text-gray-900">
+                  <h3 className="text-2xl font-bold text-green-500">
                     Quick Booking
                   </h3>
                   <p className="text-gray-600">Schedule your appointment now</p>
@@ -209,7 +209,7 @@ const Hero = () => {
 
                   <button
                     onClick={handleFindPhysiotherapists}
-                    className="w-full bg-gradient-to-r from-[#7ce3b1] to-[#6dd4a2] hover:from-[#6dd4a2] hover:to-[#5eb893] text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="w-full bg-emerald-600 from-[#7ce3b1] to-[#6dd4a2] hover:from-[#6dd4a2] hover:to-[#5eb893] text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                   >
                     Find Available physiotherapists
                   </button>

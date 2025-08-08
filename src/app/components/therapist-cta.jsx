@@ -25,9 +25,9 @@ const TherapistCTA = () => {
           {/* Left Content */}
           <div className="text-gray-900 space-y-8">
             <div className="space-y-4">
-              <h2 className="text-4xl lg:text-5xl font-bold leading-tight">
+              <h2 className="text-4xl lg:text-5xl text-green-500 font-bold leading-tight">
                 Join Ireland's Leading
-                <span className="block text-[#7ce3b1]">
+                <span className="block text-green-500">
                   Physiotherapy Network
                 </span>
               </h2>
@@ -40,12 +40,12 @@ const TherapistCTA = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <a
                 href="/register-therapist"
-                className="bg-[#7ce3b1] hover:bg-emerald-600 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-center flex items-center justify-center gap-2"
+                className="bg-emerald-600 hover:bg-emerald-600 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-center flex items-center justify-center gap-2"
               >
                 Register Now
                 <ArrowRight className="h-5 w-5" />
               </a>
-              <button className="border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300">
+              <button className="border-2 border-emerald-500 bg-emerald-600 text-white hover:bg-emerald-50 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300">
                 Learn More
               </button>
             </div>
@@ -142,7 +142,7 @@ const TherapistCTA = () => {
         {/* Call to Action */}
         <div className="mt-12 text-center">
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-8 border border-emerald-100 shadow-lg">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+            <h3 className="text-2xl font-bold text-green-500 mb-4">
               Ready to Transform Your Practice?
             </h3>
             <p className="text-gray-600 mb-6 text-lg">
@@ -150,7 +150,7 @@ const TherapistCTA = () => {
             </p>
             <a
               href="/register-therapist"
-              className="inline-flex items-center gap-2 bg-[#7ce3b1] hover:bg-emerald-600 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+              className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-600 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <Award className="h-5 w-5" />
               Start Your Application

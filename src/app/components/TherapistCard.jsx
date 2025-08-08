@@ -1,6 +1,8 @@
-import { Phone, Mail } from "lucide-react";
-import { getSpecializationIdByName } from "@/lib/actions/booking";
+import { Phone, Mail, MapPin } from "lucide-react";
+
 export default function TherapistCard({ therapist }) {
+  const clinic = therapist.clinics?.[0]; // First clinic
+
   return (
     <div className="bg-white border border-emerald-100 p-6 rounded-2xl shadow-md space-y-4 w-full max-w-lg mx-auto">
       {/* Header Row */}
@@ -18,12 +20,18 @@ export default function TherapistCard({ therapist }) {
             <p className="text-sm text-emerald-600 font-medium">
               {therapist.specialization}
             </p>
+            {clinic?.city && (
+              <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                <MapPin className="w-4 h-4" />
+                <span>{clinic.city}</span>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="text-right">
           <p className="text-emerald-600 text-lg font-semibold">
-            €{therapist.price}
+            {therapist.price}
           </p>
           <p className="text-xs text-gray-400">per session</p>
         </div>
@@ -71,11 +79,10 @@ export default function TherapistCard({ therapist }) {
 
       {/* Actions */}
       <div className="flex items-center gap-3 mt-4">
-        <button  className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold py-2 rounded-md">
+        <button className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold py-2 rounded-md">
           Book Appointment
         </button>
 
-        {/* Phone Icon Link */}
         {therapist.phone && (
           <a
             href={`tel:${therapist.phone}`}
@@ -86,7 +93,6 @@ export default function TherapistCard({ therapist }) {
           </a>
         )}
 
-        {/* Email Icon Link */}
         {therapist.email && (
           <a
             href={`mailto:${therapist.email}`}

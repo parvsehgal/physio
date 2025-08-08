@@ -17,6 +17,7 @@ import {
   ChevronDown,
   Sparkles,
 } from "lucide-react";
+import Footer from "../components/footer";
 
 const AboutUsPage = () => {
   const [formData, setFormData] = useState({
@@ -145,6 +146,7 @@ const AboutUsPage = () => {
   };
 
   return (
+    <>
     <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Animated Background Pattern */}
       <div className="fixed inset-0 opacity-5 pointer-events-none">
@@ -216,14 +218,11 @@ const AboutUsPage = () => {
               <div className="absolute -top-2 -right-2 w-4 h-4 bg-[#7ce3b1] rounded-full animate-bounce"></div>
             </div>
 
-            <h1 className="text-6xl md:text-8xl font-bold text-gray-800 mb-6 relative">
+            <h1 className="text-6xl md:text-8xl font-bold text-green-500 mb-6 relative">
               About{" "}
               <span
-                className="text-transparent bg-clip-text bg-gradient-to-r from-[#7ce3b1] to-[#5dd498] animate-pulse"
-                style={{
-                  transform: `translateX(${mousePosition.x * 5}px) translateY(${mousePosition.y * 5}px)`,
-                  transition: "transform 0.3s ease-out",
-                }}
+                className=" text-green-500  to-[#5dd498] animate-pulse"
+                
               >
                 AbhailePhysiotherapy
               </span>
@@ -260,7 +259,7 @@ const AboutUsPage = () => {
                 : "translate-y-20 opacity-0"
             }`}
           >
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-800 mb-4 relative">
+            <h2 className="text-5xl md:text-6xl font-bold text-green-500 mb-4 relative">
               Our Mission
               <div className="absolute -top-4 -right-4 w-3 h-3 bg-[#7ce3b1] rounded-full animate-ping"></div>
             </h2>
@@ -295,7 +294,7 @@ const AboutUsPage = () => {
                 : "translate-y-20 opacity-0"
             }`}
           >
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-800 mb-4 relative">
+            <h2 className="text-5xl md:text-6xl font-bold text-green-500 mb-4 relative">
               Our Vision
               <div className="absolute -top-2 -left-2 w-4 h-4 bg-gradient-to-r from-[#7ce3b1] to-[#5dd498] rounded-full animate-bounce"></div>
             </h2>
@@ -332,7 +331,7 @@ const AboutUsPage = () => {
                 : "translate-y-20 opacity-0"
             }`}
           >
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-800 mb-4">
+            <h2 className="text-5xl md:text-6xl font-bold text-green-500 mb-4">
               Our Values
             </h2>
             <div className="w-32 h-1 bg-gradient-to-r from-[#7ce3b1] to-[#5dd498] mx-auto mb-6 animate-pulse"></div>
@@ -385,259 +384,109 @@ const AboutUsPage = () => {
         </div>
       </section>
 
-      {/* Founder Section */}
-      <section id="founder" data-animate className="py-20 bg-white relative">
-        <div className="container max-w-7xl mx-auto px-4">
+
+{/* why choose us */}
+
+{/* Why Choose Us Section */}
+<section
+  id="why-choose-us"
+  data-animate
+  className="py-20 bg-white border-t border-gray-200 relative"
+>
+  <div className="container max-w-7xl mx-auto px-4">
+    <div
+      className={`text-center mb-16 transform transition-all duration-1000 ${
+        isVisible["why-choose-us"]
+          ? "translate-y-0 opacity-100"
+          : "translate-y-20 opacity-0"
+      }`}
+    >
+      <h2 className="text-5xl md:text-6xl font-bold text-green-500 mb-4">
+        Why Choose Us
+      </h2>
+      <div className="w-32 h-1 bg-gradient-to-r from-[#7ce3b1] to-[#5dd498] mx-auto mb-6 animate-pulse"></div>
+      <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+        We go beyond connecting you to a physiotherapist — we ensure your
+        recovery journey is smooth, reliable, and personalized.
+      </p>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {[
+        {
+          icon: <User className="w-8 h-8" />,
+          title: "Verified Professionals",
+          desc: "All physiotherapists are licensed and vetted for expertise and trustworthiness.",
+          color: "from-green-400 to-emerald-500",
+        },
+        {
+          icon: <Clock className="w-8 h-8" />,
+          title: "Flexible Scheduling",
+          desc: "Book sessions at times that work best for you — even weekends or evenings.",
+          color: "from-[#7ce3b1] to-[#5dd498]",
+        },
+        {
+          icon: <Heart className="w-8 h-8" />,
+          title: "Personalized Care",
+          desc: "Treatment plans tailored to your recovery goals and lifestyle.",
+          color: "from-pink-400 to-red-400",
+        },
+        {
+          icon: <MapPin className="w-8 h-8" />,
+          title: "Local & Accessible",
+          desc: "Find physiotherapists near you to save time and travel.",
+          color: "from-blue-400 to-indigo-400",
+        },
+        {
+          icon: <Award className="w-8 h-8" />,
+          title: "Proven Excellence",
+          desc: "Partnered only with practitioners with a strong track record of results.",
+          color: "from-yellow-400 to-orange-400",
+        },
+        {
+          icon: <Shield className="w-8 h-8" />,
+          title: "Safe & Secure",
+          desc: "Your health, data, and privacy are always protected.",
+          color: "from-purple-400 to-pink-400",
+        },
+      ].map((item, index) => (
+        <div
+          key={index}
+          className={`group bg-white rounded-3xl p-8 border border-gray-200 hover:border-[#7ce3b1] transition-all duration-500 hover:shadow-xl relative overflow-hidden transform ${
+            isVisible["why-choose-us"]
+              ? "translate-y-0 opacity-100"
+              : "translate-y-20 opacity-0"
+          }`}
+          style={{ transitionDelay: `${index * 150}ms` }}
+        >
           <div
-            className={`text-center mb-16 transform transition-all duration-1000 ${
-              isVisible.founder
-                ? "translate-y-0 opacity-100"
-                : "translate-y-20 opacity-0"
-            }`}
-          >
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-800 mb-4">
-              Our Founder
-            </h2>
-            <div className="w-32 h-1 bg-gradient-to-r from-[#7ce3b1] to-[#5dd498] mx-auto mb-6 animate-pulse"></div>
-          </div>
-
-          <div
-            className={`max-w-4xl mx-auto transform transition-all duration-1000 delay-300 ${
-              isVisible.founder
-                ? "translate-y-0 opacity-100"
-                : "translate-y-20 opacity-0"
-            }`}
-          >
-            <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-10 border border-gray-200 hover:shadow-xl transition-all duration-500 relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#7ce3b1] to-[#5dd498] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left"></div>
-
-              <div className="flex flex-col lg:flex-row items-center lg:items-start gap-10">
-                <div className="flex-shrink-0 relative">
-                  <div className="relative group/avatar">
-                    <div className="w-56 h-56 bg-gradient-to-br from-[#7ce3b1] to-[#5dd498] rounded-3xl flex items-center justify-center transform group-hover/avatar:rotate-3 transition-transform duration-500 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-white/10 group-hover/avatar:bg-white/20 transition-colors duration-500"></div>
-                      <User className="w-28 h-28 text-white relative z-10" />
-
-                      <div className="absolute -top-4 -right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center group-hover/avatar:animate-bounce">
-                        <Sparkles className="w-4 h-4 text-[#7ce3b1]" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex-1 text-center lg:text-left space-y-6">
-                  <div>
-                    <h3 className="text-4xl font-bold text-gray-800 mb-2 group-hover:text-[#7ce3b1] transition-colors duration-300">
-                      Dr. Sarah Mitchell
-                    </h3>
-                    <p className="text-[#7ce3b1] font-semibold text-lg mb-1">
-                      Founder & CEO, Registered Physiotherapist
-                    </p>
-                    <div className="flex justify-center lg:justify-start items-center gap-2 mb-6 group/linkedin">
-                      <Linkedin className="w-5 h-5 text-[#7ce3b1] group-hover/linkedin:animate-bounce" />
-                      <a
-                        href="#"
-                        className="text-[#7ce3b1] hover:text-[#5dd498] transition-colors relative group/link"
-                      >
-                        linkedin.com/in/drsarahmitchell
-                        <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#5dd498] group-hover/link:w-full transition-all duration-300"></div>
-                      </a>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4 text-gray-700 text-lg leading-relaxed">
-                    <p className="transform hover:translate-x-2 transition-transform duration-300">
-                      Dr. Sarah Mitchell is a licensed physiotherapist with over
-                      12 years of clinical experience specializing in sports
-                      rehabilitation and chronic pain management. She founded
-                      AbhailePhysiotherapy after experiencing firsthand the
-                      challenges patients face when trying to access timely,
-                      quality physiotherapy care.
-                    </p>
-
-                    <p className="transform hover:translate-x-2 transition-transform duration-300 delay-100">
-                      Sarah holds a Doctor of Physical Therapy from the
-                      University of Toronto and is certified in manual therapy
-                      and dry needling techniques. Her passion for combining
-                      technology with compassionate care drives
-                      AbhailePhysiotherapy's mission to make physiotherapy more
-                      accessible and effective for all patients.
-                    </p>
-                  </div>
-                </div>
+            className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
+          ></div>
+          <div className="flex flex-col items-center text-center relative z-10">
+            <div className="relative mb-6">
+              <div
+                className={`absolute inset-0 bg-gradient-to-r ${item.color} rounded-full opacity-20 group-hover:scale-150 transition-transform duration-500`}
+              ></div>
+              <div className="text-[#7ce3b1] group-hover:scale-110 transition-transform duration-300 relative z-10 p-4">
+                {item.icon}
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section
-        id="contact"
-        data-animate
-        className="py-20 bg-gradient-to-br from-gray-50 to-white border-t border-gray-200"
-      >
-        <div className="container max-w-7xl mx-auto px-4">
-          <div
-            className={`text-center mb-16 transform transition-all duration-1000 ${
-              isVisible.contact
-                ? "translate-y-0 opacity-100"
-                : "translate-y-20 opacity-0"
-            }`}
-          >
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-800 mb-4">
-              Contact Us
-            </h2>
-            <div className="w-32 h-1 bg-gradient-to-r from-[#7ce3b1] to-[#5dd498] mx-auto mb-6 animate-pulse"></div>
-            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-              Have questions about our platform? Need support with booking?
-              We're here to help.
+            <h3 className="text-gray-800 font-bold text-xl mb-4 group-hover:text-[#7ce3b1] transition-colors duration-300">
+              {item.title}
+            </h3>
+            <p className="text-gray-600 text-sm leading-relaxed">
+              {item.desc}
             </p>
           </div>
-
-          <div
-            className={`max-w-5xl mx-auto transform transition-all duration-1000 delay-300 ${
-              isVisible.contact
-                ? "translate-y-0 opacity-100"
-                : "translate-y-20 opacity-0"
-            }`}
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              {/* Contact Information */}
-              <div className="space-y-8">
-                <div className="bg-white rounded-3xl p-8 border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#7ce3b1]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                  <h3 className="text-3xl font-bold text-gray-800 mb-8 relative z-10">
-                    Get In Touch
-                  </h3>
-
-                  <div className="space-y-6 relative z-10">
-                    {[
-                      {
-                        icon: Mail,
-                        label: "Email",
-                        value: "info@abhailephysiotherapy.com",
-                        color: "from-blue-400 to-cyan-400",
-                      },
-                      {
-                        icon: Phone,
-                        label: "Phone",
-                        value: "1-800-ABHAILE (864-7479)",
-                        color: "from-green-400 to-emerald-400",
-                      },
-                      {
-                        icon: MapPin,
-                        label: "Address",
-                        value: "Dublin, Ireland | Available Nationwide",
-                        color: "from-purple-400 to-pink-400",
-                      },
-                    ].map((item, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center gap-4 group/item transform hover:translate-x-2 transition-all duration-300"
-                      >
-                        <div
-                          className={`w-14 h-14 bg-gradient-to-r ${item.color} rounded-xl flex items-center justify-center group-hover/item:scale-110 transition-transform duration-300 relative overflow-hidden`}
-                        >
-                          <div className="absolute inset-0 bg-white/20 group-hover/item:bg-white/30 transition-colors duration-300"></div>
-                          <item.icon className="w-6 h-6 text-white relative z-10" />
-                        </div>
-                        <div>
-                          <p className="text-gray-500 text-sm font-medium">
-                            {item.label}
-                          </p>
-                          <p className="text-gray-800 font-semibold">
-                            {item.value}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Contact Form */}
-              <div className="bg-white rounded-3xl p-8 border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-500 relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#7ce3b1]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                <div className="space-y-6 relative z-10">
-                  {[
-                    {
-                      name: "name",
-                      label: "Full Name",
-                      type: "text",
-                      placeholder: "Enter your full name",
-                    },
-                    {
-                      name: "email",
-                      label: "Email Address",
-                      type: "email",
-                      placeholder: "Enter your email address",
-                    },
-                    {
-                      name: "subject",
-                      label: "Subject",
-                      type: "text",
-                      placeholder: "Enter message subject",
-                    },
-                  ].map((field, index) => (
-                    <div key={field.name} className="group/field">
-                      <label className="block text-gray-800 font-semibold mb-2 group-focus-within/field:text-[#7ce3b1] transition-colors duration-300">
-                        {field.label}
-                      </label>
-                      <input
-                        type={field.type}
-                        name={field.name}
-                        value={formData[field.name]}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#7ce3b1] focus:bg-white transition-all duration-300 transform focus:scale-105"
-                        placeholder={field.placeholder}
-                        style={{ transitionDelay: `${index * 100}ms` }}
-                      />
-                    </div>
-                  ))}
-
-                  <div className="group/field">
-                    <label className="block text-gray-800 font-semibold mb-2 group-focus-within/field:text-[#7ce3b1] transition-colors duration-300">
-                      Message
-                    </label>
-                    <textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      rows={5}
-                      className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#7ce3b1] focus:bg-white transition-all duration-300 resize-none transform focus:scale-105"
-                      placeholder="How can we help you?"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-[#7ce3b1] to-[#5dd498] hover:from-[#5dd498] hover:to-[#7ce3b1] text-white font-bold py-4 px-8 rounded-xl transition-all duration-500 flex items-center justify-center gap-3 transform hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group/button"
-                  >
-                    <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover/button:translate-x-[100%] transition-transform duration-700"></div>
-
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="w-5 h-5 group-hover/button:translate-x-1 transition-transform duration-300" />
-                        Send Message
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
+
+
+   
       {/* Scroll to top button */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -646,6 +495,11 @@ const AboutUsPage = () => {
         <ChevronDown className="w-6 h-6 rotate-180 group-hover:-translate-y-1 transition-transform duration-300" />
       </button>
     </div>
+    {/*  footer */}
+    <Footer/>
+    </>
+  
+
   );
 };
 

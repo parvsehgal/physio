@@ -4,11 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "db:seed": "node prisma/seed.js",
-    "build": "prisma generate && next build",
     "postinstall": "prisma generate"
   },
   "prisma": {
@@ -18,11 +17,14 @@
     "@prisma/client": "^6.12.0",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
+    "framer-motion": "^12.23.12",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.525.0",
     "next": "15.3.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.5.2",
+    "react-icons": "^5.5.0",
     "zod": "^4.0.5"
   },
   "devDependencies": {

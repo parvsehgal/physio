@@ -1,27 +1,23 @@
 "use client";
 import {
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
-  Phone,
-  Mail,
-  MapPin,
-  Shield,
-  Award,
-  Users,
-  Clock,
-  Globe,
-  Heart,
-  Star,
+  Facebook, Twitter, Instagram, Linkedin,
+  Phone, Mail, MapPin, Shield, Award, Users, Clock, Globe, Heart, Star,
+  BookOpen, Stethoscope, FileText, Briefcase,
+  Search, Calendar, Activity, Wallet, User, Library, MessageSquare, Smartphone,
+  UserPlus, Settings, GraduationCap, FolderOpen, CreditCard, HelpCircle, Share2,
+  Info, Target, Users2, BriefcaseBusiness, Newspaper, DollarSign, PenTool, Headset,
+  Dumbbell, ClipboardList, Smile, Brain, Baby,
+  Lock, FileLock, Cookie, Eye
 } from "lucide-react";
 
 const Footer = () => {
   return (
     <footer className="bg-gray-50 text-gray-800 py-16 px-4">
       <div className="max-w-7xl mx-auto">
+        
         {/* Main Footer Content */}
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+          
           {/* Company Info */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-3">
@@ -66,334 +62,96 @@ const Footer = () => {
 
           {/* For Patients */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-gray-900">
-              For Patients
+            <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
+              <Heart className="h-5 w-5 text-green-500" /> For Patients
             </h3>
             <ul className="space-y-2 text-gray-600">
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Find Therapists
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Book Appointment
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Treatment Areas
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Insurance Coverage
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Patient Portal
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Health Resources
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Patient Reviews
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Mobile App
-                </a>
-              </li>
+              <li className="flex items-center gap-2"><Search className="h-4 w-4 text-green-500" /> Find Therapists</li>
+              <li className="flex items-center gap-2"><Calendar className="h-4 w-4 text-green-500" /> Book Appointment</li>
+              <li className="flex items-center gap-2"><Activity className="h-4 w-4 text-green-500" /> Treatment Areas</li>
+              <li className="flex items-center gap-2"><Wallet className="h-4 w-4 text-green-500" /> Insurance Coverage</li>
+              <li className="flex items-center gap-2"><User className="h-4 w-4 text-green-500" /> Patient Portal</li>
+              <li className="flex items-center gap-2"><Library className="h-4 w-4 text-green-500" /> Health Resources</li>
+              <li className="flex items-center gap-2"><MessageSquare className="h-4 w-4 text-green-500" /> Patient Reviews</li>
+              <li className="flex items-center gap-2"><Smartphone className="h-4 w-4 text-green-500" /> Mobile App</li>
             </ul>
           </div>
 
           {/* For Therapists */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-gray-900">
-              For Therapists
+            <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
+              <Stethoscope className="h-5 w-5 text-green-500" /> For Therapists
             </h3>
             <ul className="space-y-2 text-gray-600">
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Join Our Network
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Therapist Portal
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Professional Resources
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Continuing Education
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Practice Management
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Payment & Billing
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Support Center
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Referral Program
-                </a>
-              </li>
+              <li className="flex items-center gap-2"><UserPlus className="h-4 w-4 text-green-500" /> Join Our Network</li>
+              <li className="flex items-center gap-2"><Settings className="h-4 w-4 text-green-500" /> Therapist Portal</li>
+              <li className="flex items-center gap-2"><Library className="h-4 w-4 text-green-500" /> Professional Resources</li>
+              <li className="flex items-center gap-2"><GraduationCap className="h-4 w-4 text-green-500" /> Continuing Education</li>
+              <li className="flex items-center gap-2"><FolderOpen className="h-4 w-4 text-green-500" /> Practice Management</li>
+              <li className="flex items-center gap-2"><CreditCard className="h-4 w-4 text-green-500" /> Payment & Billing</li>
+              <li className="flex items-center gap-2"><HelpCircle className="h-4 w-4 text-green-500" /> Support Center</li>
+              <li className="flex items-center gap-2"><Share2 className="h-4 w-4 text-green-500" /> Referral Program</li>
             </ul>
           </div>
 
           {/* Company */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-gray-900">
-              Company
+            <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
+              <Briefcase className="h-5 w-5 text-green-500" /> Company
             </h3>
             <ul className="space-y-2 text-gray-600">
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  About Us
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Our Mission
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Leadership Team
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Careers
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Press & Media
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Investor Relations
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Blog
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-green-500 transition-colors duration-200"
-                >
-                  Contact Us
-                </a>
-              </li>
+              <li className="flex items-center gap-2"><Info className="h-4 w-4 text-green-500" /> About Us</li>
+              <li className="flex items-center gap-2"><Target className="h-4 w-4 text-green-500" /> Our Mission</li>
+              <li className="flex items-center gap-2"><Users2 className="h-4 w-4 text-green-500" /> Leadership Team</li>
+              <li className="flex items-center gap-2"><BriefcaseBusiness className="h-4 w-4 text-green-500" /> Careers</li>
+              <li className="flex items-center gap-2"><Newspaper className="h-4 w-4 text-green-500" /> Press & Media</li>
+              <li className="flex items-center gap-2"><DollarSign className="h-4 w-4 text-green-500" /> Investor Relations</li>
+              <li className="flex items-center gap-2"><PenTool className="h-4 w-4 text-green-500" /> Blog</li>
+              <li className="flex items-center gap-2"><Headset className="h-4 w-4 text-green-500" /> Contact Us</li>
             </ul>
           </div>
         </div>
+
+        {/* Extra Links */}
         <div className="border-t border-gray-200 pt-8 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            {/* Resources */}
             <div>
-              <h4 className="font-semibold mb-3 text-gray-900">Resources</h4>
+              <h4 className="font-semibold mb-3 text-gray-900 flex items-center gap-2">
+                <BookOpen className="h-4 w-4 text-green-500" /> Resources
+              </h4>
               <ul className="space-y-1 text-sm text-gray-600">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-500 transition-colors duration-200"
-                  >
-                    Exercise Library
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-500 transition-colors duration-200"
-                  >
-                    Recovery Guides
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-500 transition-colors duration-200"
-                  >
-                    Wellness Tips
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-500 transition-colors duration-200"
-                  >
-                    Research & Studies
-                  </a>
-                </li>
+                <li className="flex items-center gap-2"><Dumbbell className="h-4 w-4 text-green-500" /> Exercise Library</li>
+                <li className="flex items-center gap-2"><ClipboardList className="h-4 w-4 text-green-500" /> Recovery Guides</li>
+                <li className="flex items-center gap-2"><Smile className="h-4 w-4 text-green-500" /> Wellness Tips</li>
+                <li className="flex items-center gap-2"><Brain className="h-4 w-4 text-green-500" /> Research & Studies</li>
               </ul>
             </div>
+
+            {/* Specialties */}
             <div>
-              <h4 className="font-semibold mb-3 text-gray-900">Specialties</h4>
+              <h4 className="font-semibold mb-3 text-gray-900 flex items-center gap-2">
+                <Award className="h-4 w-4 text-green-500" /> Specialties
+              </h4>
               <ul className="space-y-1 text-sm text-gray-600">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-500 transition-colors duration-200"
-                  >
-                    Sports Medicine
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-500 transition-colors duration-200"
-                  >
-                    Orthopedic Care
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-500 transition-colors duration-200"
-                  >
-                    Neurological Rehab
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-500 transition-colors duration-200"
-                  >
-                    Pediatric Therapy
-                  </a>
-                </li>
+                <li className="flex items-center gap-2"><Activity className="h-4 w-4 text-green-500" /> Sports Medicine</li>
+                <li className="flex items-center gap-2"><ClipboardList className="h-4 w-4 text-green-500" /> Orthopedic Care</li>
+                <li className="flex items-center gap-2"><Brain className="h-4 w-4 text-green-500" /> Neurological Rehab</li>
+                <li className="flex items-center gap-2"><Baby className="h-4 w-4 text-green-500" /> Pediatric Therapy</li>
               </ul>
             </div>
+
+            {/* Legal */}
             <div>
-              <h4 className="font-semibold mb-3 text-gray-900">Legal</h4>
+              <h4 className="font-semibold mb-3 text-gray-900 flex items-center gap-2">
+                <Shield className="h-4 w-4 text-green-500" /> Legal
+              </h4>
               <ul className="space-y-1 text-sm text-gray-600">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-500 transition-colors duration-200"
-                  >
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-500 transition-colors duration-200"
-                  >
-                    Terms of Service
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-500 transition-colors duration-200"
-                  >
-                    Cookie Policy
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-500 transition-colors duration-200"
-                  >
-                    Accessibility
-                  </a>
-                </li>
+                <li className="flex items-center gap-2"><Lock className="h-4 w-4 text-green-500" /> Privacy Policy</li>
+                <li className="flex items-center gap-2"><FileLock className="h-4 w-4 text-green-500" /> Terms of Service</li>
+                <li className="flex items-center gap-2"><Cookie className="h-4 w-4 text-green-500" /> Cookie Policy</li>
+                <li className="flex items-center gap-2"><Eye className="h-4 w-4 text-green-500" /> Accessibility</li>
               </ul>
             </div>
           </div>
@@ -419,6 +177,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
+
       </div>
     </footer>
   );

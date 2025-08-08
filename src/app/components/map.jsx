@@ -269,9 +269,9 @@ const IrelandPhysiotherapistMap = () => {
       <div className="w-full">
         {/* Header */}
         <div className="text-center space-y-4 mb-12 px-4 animate-fade-in-up">
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 animate-slide-in-down">
+          <h2 className="text-4xl lg:text-5xl font-bold text-green-500 animate-slide-in-down">
             Find Physiotherapists
-            <span className="text-emerald-500 block animate-pulse-subtle">Across Ireland</span>
+            <span className="text-green-500 block animate-pulse-subtle">Across Ireland</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto animate-fade-in delay-300">
             Discover certified physiotherapists in your area. Click on any
