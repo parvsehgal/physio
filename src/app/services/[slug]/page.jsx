@@ -384,17 +384,17 @@ export default function FindTherapistPage() {
         {/* Bottom CTA */}
         <div className="mt-20 text-center space-y-6 animate-fade-in delay-700">
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-[#7ce3b1]/30 shadow-lg max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-green-500 mb-4">
               Ready to Start Your Recovery Journey?
             </h2>
             <p className="text-xl text-gray-600 mb-6">
               Book an appointment with our certified physiotherapists and get personalized treatment plans.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-gradient-to-r from-[#7ce3b1] to-[#6dd4a2] hover:from-[#6dd4a2] hover:to-[#5eb893] text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <button className="bg-emerald-600 from-[#7ce3b1] to-[#6dd4a2] hover:from-[#6dd4a2] hover:to-[#5eb893] text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                 Book Appointment Now
               </button>
-              <button className="border-2 border-[#7ce3b1] text-[#5eb893] hover:bg-[#7ce3b1]/10 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300 hover:scale-105">
+              <button className="border-2 border-[#7ce3b1] bg-emerald-600 text-white hover:bg-[#7ce3b1]/10 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300 hover:scale-105">
                 Find Therapists
               </button>
             </div>
