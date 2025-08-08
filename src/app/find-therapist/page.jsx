@@ -130,7 +130,7 @@ export default function FindTherapistPage() {
         />
 
         <div className="bg-[#f9fdfc] py-20 px-6 md:px-20 text-center relative">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+          <h2 className="text-4xl md:text-5xl font-bold text-green-500">
             Expert Care in <br />
             <span className="text-green-500">Every Specialty</span>
           </h2>
@@ -176,7 +176,7 @@ export default function FindTherapistPage() {
 
         <div className="mt-20 text-center space-y-6 animate-fade-in delay-700">
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-[#7ce3b1]/30 shadow-lg max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-green-500 mb-4">
               Ready to Start Your Recovery Journey?
             </h2>
             <p className="text-xl text-gray-600 mb-6">

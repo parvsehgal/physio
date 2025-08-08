@@ -44,7 +44,7 @@ const Features = () => {
     <section className="py-20 px-4 bg-white">
       <div className="max-w-6xl mx-auto">
         <div className="text-center space-y-4 mb-16 animate-fade-in-up">
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 animate-slide-in-down">
+          <h2 className="text-4xl lg:text-5xl font-bold text-green-500 animate-slide-in-down">
             Why Choose Our Platform?
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in delay-300">

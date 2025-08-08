@@ -44,7 +44,7 @@ export default function BlogsSection() {
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-green-500 mb-4">
             Latest Blogs
           </h2>
           <div className="w-24 h-1 bg-[#7ce3b1] mx-auto rounded-full"></div>

@@ -46,9 +46,9 @@ const SpecializationsPage = () => {
               <span className="text-[#5eb893] font-medium">Our Specializations</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-green-500 leading-tight">
               Expert Care in
-              <span className="text-[#7ce3b1] block">Every Specialty</span>
+              <span className="text-green-500 block">Every Specialty</span>
             </h1>
 
             <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
@@ -119,7 +119,7 @@ const SpecializationsPage = () => {
                   </p>
                   <a
                     href={`/services/${spec.name }`}
-                    className="block text-center bg-gradient-to-r from-[#7ce3b1] to-[#6dd4a2] text-white py-2 rounded-lg font-medium hover:from-[#6dd4a2] hover:to-[#5eb893] transition"
+                    className="block text-center bg-emerald-600 from-[#7ce3b1] to-[#6dd4a2] text-white py-2 rounded-lg font-medium hover:from-[#6dd4a2] hover:to-[#5eb893] transition"
                   >
                     View Therapists
                   </a>
