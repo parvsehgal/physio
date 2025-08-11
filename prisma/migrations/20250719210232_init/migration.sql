@@ -7,6 +7,13 @@ CREATE TYPE "payment_status" AS ENUM ('pending', 'completed', 'failed', 'refunde
 -- CreateEnum
 CREATE TYPE "notification_type" AS ENUM ('booking', 'payment', 'reminder', 'system');
 
+
+
+
+
+
+
+
 -- CreateTable
 CREATE TABLE "cities" (
     "id" SERIAL NOT NULL,

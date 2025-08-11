@@ -7,6 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+
+
+
+
+
+
+
+
 model City {
   id            Int           @id @default(autoincrement())
   name          String        @db.VarChar(100)
@@ -55,7 +64,7 @@ model User {
   reviews                Review[]
   addresses              UserAddress[]
   role                   UserRole                @relation(fields: [roleId], references: [id])
-
+ 
   @@index([email], map: "idx_email")
   @@index([roleId], map: "idx_role")
   @@map("users")
